@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Jakten på kjærligheten · Synne & Aksel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F5F0;color:#1a1a1a;font-size:16px;min-height:100vh}
+    :root{
+      --cg:#3D4A1E;--cl:#EEF2E3;--cm:#6B7C3E;
+      --ca:#C4622D;--cal:#FAF0EB;--cad:#7A3A18;
+      --bg:#F5F5F0;--card:#fff;--border:rgba(0,0,0,0.1);
+      --text:#1a1a1a;--muted:#666;
+      --radius-sm:8px;--radius-md:12px;--radius-lg:16px;
+    }
+    @media (prefers-color-scheme:dark){
+      :root{--bg:#1a1a18;--card:#242420;--border:rgba(255,255,255,0.1);--text:#f0f0ec;--muted:#999;--cl:#2a3318;--cg:#a8be6a;--cm:#8aaa4e;}
+    }
+
+    /* Layout */
+    .app{max-width:430px;margin:0 auto;padding:0 0 72px;background:var(--bg);min-height:100vh}
+    .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:0.5px solid var(--border);display:flex;z-index:100}
+    .nav button{flex:1;padding:12px 2px 10px;border:none;background:none;font-size:10px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:56px;font-family:inherit}
+    .nav button.active{color:var(--cm)}
+    .nav button i{font-size:22px}
+    .screen{display:none;padding:16px}
+    .screen.active{display:block}
+
+    /* Typography */
+    h2{font-size:20px;font-weight:600;margin-bottom:14px;color:var(--text)}
+    h3{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)}
+
+    /* Cards */
+    .card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px}
+
+    /* Pills */
+    .pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+    .pill-auto{background:var(--cl);color:var(--cg)}
+    .pill-admin{background:var(--cal);color:var(--cad)}
+    .pill-multi{background:#FAF4E1;color:#6B4E10}
+
+    /* Forms */
+    input[type=text],input[type=number],input[type=password],select,textarea{
+      width:100%;padding:12px;border:0.5px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--card);color:var(--text);font-size:16px;font-family:inherit;
+      margin-top:4px;margin-bottom:4px;-webkit-appearance:none;appearance:none;
+    }
+    input:focus,select:focus,textarea:focus{outline:2px solid var(--cm);outline-offset:-1px}
+    textarea{resize:vertical;min-height:72px;font-size:14px}
+
+    /* Buttons */
+    button.primary{width:100%;background:var(--cm);color:#fff;border:none;padding:14px;border-radius:var(--radius-sm);font-size:16px;cursor:pointer;margin-top:8px;min-height:50px;font-family:inherit;font-weight:500}
+    button.primary:active{background:var(--cg);transform:scale(0.98)}
+    .btn-sm{padding:8px 14px;border:0.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:var(--card);font-size:14px;color:var(--text);min-height:40px;font-family:inherit}
+    .btn-icon{padding:8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:var(--card);font-size:16px;color:var(--muted);min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+
+    /* Hero */
+    .hero{background:var(--cl);border-radius:var(--radius-lg);padding:22px 16px 18px;margin-bottom:16px;text-align:center;border:0.5px solid rgba(107,124,62,0.2)}
+    .hero-game{font-size:24px;font-weight:700;color:var(--cg);letter-spacing:-0.4px;margin-bottom:6px}
+    .hero-emojis{font-size:18px;line-height:2;margin-bottom:8px}
+    .hero-couple{font-size:13px;color:var(--cm)}
+    .screen-hero{background:var(--cl);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:14px;text-align:center;border:0.5px solid rgba(107,124,62,0.15)}
+
+    /* Bingo */
+    .bingo-grid{display:grid;grid-template-columns:34px 1fr 1fr 1fr;gap:4px;margin-bottom:14px}
+    .bingo-header{font-size:11px;font-weight:600;color:var(--cm);text-align:center;padding:5px 2px}
+    .bingo-pts{font-size:11px;font-weight:500;color:var(--muted);display:flex;align-items:center;justify-content:center}
+    .bingo-cell{border-radius:var(--radius-sm);border:0.5px solid var(--border);padding:8px 4px;text-align:center;cursor:pointer;font-size:11px;line-height:1.3;background:var(--card);min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;user-select:none;transition:transform 0.1s}
+    .bingo-cell:active{transform:scale(0.95)}
+    .bingo-cell.done{background:var(--cl);border-color:var(--cm)}
+    .bingo-cell.pending{background:var(--cal);border-color:var(--ca)}
+    .bingo-cell .ccode{font-size:9px;color:var(--muted)}
+
+    /* Leaderboard */
+    .lb-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:0.5px solid var(--border)}
+
+    /* Map */
+    .map-wrap{position:relative;border-radius:var(--radius-lg);overflow:hidden;border:0.5px solid var(--border);margin-bottom:12px}
+    .map-wrap img{width:100%;display:block;height:280px;object-fit:cover}
+    .map-pin{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;cursor:pointer;border:2px solid #fff;transform:translate(-50%,-50%);z-index:2;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+    .map-pin.done{background:var(--cm);color:#fff}
+    .map-pin.open{background:#fff;color:var(--cm);border-color:var(--cm)}
+    .map-pin.pending{background:var(--ca);color:#fff}
+
+    /* Modal — bottom sheet on mobile */
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-end;justify-content:center;padding:0}
+    .modal-bg.show{display:flex}
+    .modal{background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:430px;max-height:88vh;overflow-y:auto}
+    .modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+
+    /* Feedback */
+    .feedback{padding:14px;border-radius:var(--radius-sm);margin-top:10px;font-size:15px;font-weight:500;text-align:center}
+    .feedback.ok{background:var(--cl);color:var(--cg)}
+    .feedback.err{background:#FCEBEB;color:#791F1F}
+    .feedback.wait{background:var(--cal);color:var(--cad)}
+
+    /* Admin tabs */
+    .atab{display:flex;margin-bottom:14px;border:0.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+    .atab button{flex:1;padding:10px 2px;border:none;background:none;font-size:12px;cursor:pointer;color:var(--muted);min-height:44px;font-family:inherit}
+    .atab button.active{background:var(--cl);color:var(--cg);font-weight:600}
+
+    /* Progress */
+    .prog-bar{height:5px;background:rgba(0,0,0,0.08);border-radius:3px;margin-top:6px;overflow:hidden}
+    .prog-fill{height:100%;background:var(--cm);border-radius:3px;transition:width 0.3s}
+
+    /* Misc */
+    .field-row{margin-bottom:12px}
+    .field-label{font-size:13px;color:var(--muted);margin-bottom:2px}
+    .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .logout-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;cursor:pointer;background:var(--card);min-height:40px;font-family:inherit}
+    .icon-grid{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+    .icon-opt{font-size:24px;cursor:pointer;padding:4px 6px;border-radius:8px;border:2px solid transparent;min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+    .icon-opt.sel{border-color:var(--cm);background:var(--cl)}
+    .task-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-md);padding:14px;margin-bottom:8px}
+    .timer-bar{background:var(--cg);color:#fff;text-align:center;padding:10px;font-size:15px;font-weight:600;letter-spacing:2px;position:sticky;top:0;z-index:50;border-radius:0 0 var(--radius-sm) var(--radius-sm)}
+    .timer-bar.warn{background:var(--ca)}
+    .timer-bar.hidden{display:none}
+    .err-msg{font-size:13px;color:#A32D2D;margin-top:4px}
+  </style>
+</head>
+<body>
+<div class="app">
+<div class="timer-bar hidden" id="timer-bar">00:00</div>
+
+<!-- SETUP -->
+<div id="s-setup" class="screen active" style="padding-top:24px">
+  <div class="hero">
+    <div class="hero-game">Jakten på kjærligheten</div>
+    <div class="hero-emojis">☀️ 🌸 💍 🌿 🍋 🦋 🌺 🥂 ✨ 🌻 💐 🫧</div>
+    <div class="hero-couple">Synne & Aksel gifter seg · Italia 🇮🇹</div>
+  </div>
+  <div class="card">
+    <h3>Registrer laget</h3>
+    <div class="field-label">Lagnavn</div>
+    <input type="text" id="inp-team" placeholder="f.eks. Viva la Vita" autocomplete="off" autocorrect="off"/>
+    <div id="name-err" class="err-msg" style="display:none"></div>
+    <div class="field-label" style="margin-top:10px">Velg lagsymbol</div>
+    <div class="icon-grid" id="icon-picker"></div>
+    <button class="primary" onclick="registerTeam()">Start jakten <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+  <div class="card">
+    <div class="field-label" style="margin-bottom:6px">Admin-tilgang</div>
+    <input type="password" id="inp-pw" placeholder="Passord"/>
+    <button class="primary" style="background:var(--card);color:var(--text);border:0.5px solid var(--border)" onclick="tryAdmin()">Logg inn som admin</button>
+  </div>
+</div>
+
+<!-- BINGO -->
+<div id="s-bingo" class="screen">
+  <div class="screen-hero">
+    <div style="font-size:14px;font-weight:600;color:var(--cg)">Jakten på kjærligheten</div>
+    <div style="font-size:11px;color:var(--cm)">Synne & Aksel · Italia 🇮🇹</div>
+  </div>
+  <div class="header-row" style="margin-bottom:10px">
+    <div>
+      <div style="font-size:17px;font-weight:600" id="bingo-title">Brett</div>
+      <div style="font-size:12px;color:var(--muted)" id="bingo-sub"></div>
+    </div>
+    <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" aria-hidden="true"></i> Logg ut</button>
+  </div>
+  <div style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--muted)" id="prog-text">0 av 9</span>
+      <span style="color:var(--cm);font-weight:600" id="pts-text">0 p</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="bingo-grid" id="bingo-grid"></div>
+  <div style="background:var(--cl);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--cg)">
+    <i class="ti ti-map-pin" aria-hidden="true"></i> Finn stasjonskoden på gården for å låse opp oppgaven.
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="s-lb" class="screen">
+  <div class="screen-hero">
+    <div style="font-size:14px;font-weight:600;color:var(--cg)">Jakten på kjærligheten</div>
+    <div style="font-size:11px;color:var(--cm)">Synne & Aksel · Italia 🇮🇹</div>
+  </div>
+  <div class="header-row">
+    <div><h2 style="margin:0">Stillingen</h2><div style="font-size:12px;color:var(--muted)">Live poengsum</div></div>
+    <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" aria-hidden="true"></i> Logg ut</button>
+  </div>
+  <div id="lb-list"></div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px">Oppdateres hvert 10. sekund</div>
+</div>
+
+<!-- MAP -->
+<div id="s-map" class="screen">
+  <div class="screen-hero">
+    <div style="font-size:14px;font-weight:600;color:var(--cg)">Jakten på kjærligheten</div>
+    <div style="font-size:11px;color:var(--cm)">Synne & Aksel · Italia 🇮🇹</div>
+  </div>
+  <div class="header-row">
+    <h2 style="margin:0">Kart</h2>
+    <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" aria-hidden="true"></i> Logg ut</button>
+  </div>
+  <div class="map-wrap">
+    <!-- BYTT UT SRC MED FAKTISK BILDE I PROSJEKTMAPPEN -->
+    <img src="map.jpg" alt="Kart over vingården" onerror="this.style.height='200px';this.style.background='var(--cl)'"/>
+    <div id="map-pins"></div>
+  </div>
+  <div style="display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap;margin-bottom:14px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--cm);margin-right:4px;vertical-align:middle"></span>Fullført</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--ca);margin-right:4px;vertical-align:middle"></span>Venter</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--card);border:1.5px solid var(--cm);margin-right:4px;vertical-align:middle"></span>Åpen</span>
+  </div>
+  <div id="map-task-list"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="s-admin" class="screen">
+  <div class="hero" style="padding:14px 16px;margin-bottom:14px">
+    <div class="hero-game" style="font-size:18px">Jakten på kjærligheten</div>
+    <div class="hero-emojis" style="font-size:14px;margin-bottom:4px">☀️ 🌸 💍 🌿 🍋 🦋 🌺 🥂 ✨ 🌻</div>
+    <div class="hero-couple">Admin · Synne & Aksel · Italia 🇮🇹</div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div style="font-size:14px;font-weight:600;margin-bottom:10px;color:var(--cg)"><i class="ti ti-clock" aria-hidden="true"></i> Nedtellingstimer</div>
+    <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:90px">
+        <div class="field-label">Minutter</div>
+        <input type="number" id="timer-min" value="90" min="1" max="999"/>
+      </div>
+      <div style="display:flex;gap:6px;padding-bottom:4px">
+        <button class="btn-sm" onclick="startTimer()">Start</button>
+        <button class="btn-sm" onclick="stopTimer()">Stopp</button>
+        <button class="btn-sm" onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-top:8px">Status: <span id="timer-status">Ikke startet</span></div>
+  </div>
+  <div class="atab">
+    <button class="active" onclick="aTab('overview',this)">Oversikt</button>
+    <button onclick="aTab('teams',this)">Lag</button>
+    <button onclick="aTab('tasks',this)">Oppgaver</button>
+    <button onclick="aTab('newtask',this)">+ Ny</button>
+  </div>
+  <div id="a-overview"></div>
+  <div id="a-teams" style="display:none"></div>
+  <div id="a-tasks" style="display:none"></div>
+  <div id="a-newtask" style="display:none"></div>
+</div>
+</div><!-- /app -->
+
+<div class="nav" id="main-nav" style="display:none">
+  <button class="active" onclick="go('bingo')" id="nav-bingo"><i class="ti ti-grid-dots" aria-hidden="true"></i>Brett</button>
+  <button onclick="go('lb')" id="nav-lb"><i class="ti ti-trophy" aria-hidden="true"></i>Poeng</button>
+  <button onclick="go('map')" id="nav-map"><i class="ti ti-map" aria-hidden="true"></i>Kart</button>
+</div>
+
+<div id="modal-bg" class="modal-bg">
+  <div class="modal" id="modal-body"><div class="modal-handle"></div></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIG — endre disse før bryllupshelgen
+// ─────────────────────────────────────────────
+const ADMIN_PW = "italia2025"; // BYTT DETTE!
+
+// Kartpins — prosent fra venstre/topp (0-100)
+// Juster disse etter faktisk plassering på kartet
+const MAP_POS = {
+  "1a":{x:18,y:22}, "1b":{x:42,y:55}, "1c":{x:70,y:18},
+  "2a":{x:28,y:80}, "2b":{x:55,y:72}, "2c":{x:75,y:45},
+  "3a":{x:18,y:48}, "3b":{x:60,y:88}, "3c":{x:85,y:70}
+};
+
+// ─────────────────────────────────────────────
+// OPPGAVER — rediger i admin-panelet eller her
+// ─────────────────────────────────────────────
+const DEFAULT_TASKS = [
+  {id:"1a",col:0,row:0,pts:10,code:"1111",title:"Q1: Møtet",type:"quiz",
+   question:"Hvilket år møttes Synne og Aksel for første gang?",answer:"2018",hint:"Årstall mellom 2015–2022"},
+  {id:"1b",col:1,row:0,pts:10,code:"2222",title:"Frukt-telling",type:"multi",
+   question:"Tell alle frukter i det avmerkede området! Send én person per frukttype — 1 minutt. Løs regnestykket.",
+   fields:[{label:"Antall sitroner",answer:""},{label:"Antall pærer",answer:""},{label:"Antall epler",answer:""},{label:"Sum totalt",answer:""}]},
+  {id:"1c",col:2,row:0,pts:10,code:"3333",title:"Emoji-quiz",type:"quiz",
+   question:"Hvilken destinasjon er dette? 🍕🛵🇮🇹☀️🍷",answer:"italia",hint:"Et land"},
+  {id:"2a",col:0,row:1,pts:20,code:"4444",title:"Q2: Brudeparet",type:"quiz",
+   question:"Hva er Aksels mors fornavn?",answer:"anne",hint:"Vanlig norsk navn"},
+  {id:"2b",col:1,row:1,pts:20,code:"5555",title:"Musikk-leken",type:"admin",
+   question:"Nyn en kjent sang uten ord! Admin gjetter innen 60 sek. Poeng etter vanskelighetsgrad."},
+  {id:"2c",col:2,row:1,pts:20,code:"6666",title:"Årstall-lek",type:"quiz",
+   question:"Se på bildet på stasjonen. Hvilket årstall ble det tatt?",answer:"2019",hint:"Se nøye"},
+  {id:"3a",col:0,row:2,pts:30,code:"7777",title:"Q3: Hard trivia",type:"quiz",
+   question:"Hvor møttes Synne og Aksel for aller første gang?",answer:"oslo",hint:"En norsk by"},
+  {id:"3b",col:1,row:2,pts:30,code:"8888",title:"Vær kreativ!",type:"admin",
+   question:"Gjør en fysisk aktivitet ingen andre lag gjør. 3 minutter. Admin bedømmer."},
+  {id:"3c",col:2,row:2,pts:30,code:"9999",title:"Ordspill-quiz",type:"quiz",
+   question:"Løs gåten: Jeg er frukt, men også noe søtt. Jeg er rund og rød. Hva er jeg?",answer:"kirsebær",hint:"Norsk frukt"}
+];
+
+const ICONS = ["🦁","🐺","🦊","🦋","🐬","🦅","🌊","🍋","🌸","🦄","🍷","🫒","🌻","🥂","🌿","🦩","🐙","🌴"];
+const COLS = ["Trivia","Fysisk","Brains"];
+const ROWS = [10,20,30];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let S = {teamName:"",teamIcon:"🦁",isAdmin:false,selIcon:ICONS[0],teamKey:""};
+let G = {teams:{},tasks:JSON.parse(JSON.stringify(DEFAULT_TASKS)),timer:{running:false,endsAt:null,minutes:90}};
+let timerInterval = null;
+
+// ─────────────────────────────────────────────
+// STORAGE — byttes ut med Firebase ved deploy
+// ─────────────────────────────────────────────
+const STORE_KEY = "jakten_v1";
+
+async function loadG() {
+  try {
+    // TODO: bytt til Firebase Realtime Database
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      G.teams = d.teams || {};
+      if (d.tasks && d.tasks.length) G.tasks = d.tasks;
+      if (d.timer) G.timer = d.timer;
+    }
+  } catch(e) {}
+}
+
+function saveG() {
+  try {
+    // TODO: bytt til Firebase Realtime Database
+    localStorage.setItem(STORE_KEY, JSON.stringify({teams:G.teams,tasks:G.tasks,timer:G.timer}));
+  } catch(e) {}
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function norm(s) { return (s||"").toLowerCase().replace(/\s+/g,"").trim(); }
+function tasks() { return G.tasks; }
+function teamPts(key) {
+  const t = G.teams[key]; if (!t) return 0;
+  let p = 0;
+  Object.entries(t.done||{}).forEach(([tid,v]) => {
+    if (v === true) { const task = tasks().find(x => x.id === tid); if (task) p += task.pts; }
+  });
+  return p + (t.adminPts||0);
+}
+function myDone() { return (G.teams[S.teamKey]||{}).done||{}; }
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+async function init() {
+  await loadG();
+  renderIconPicker();
+  timerInterval = setInterval(() => {
+    updateTimerDisplay();
+    // Poll for updates (replace with Firebase listener)
+    loadG().then(() => {
+      const a = document.querySelector(".screen.active");
+      if (a?.id === "s-lb") renderLB();
+      if (a?.id === "s-bingo") renderBingo();
+      if (a?.id === "s-admin") {
+        const at = document.querySelector(".atab button.active");
+        if (at?.textContent.includes("Oversikt")) renderAOverview();
+      }
+    });
+  }, 10000);
+  updateTimerDisplay();
+}
+
+// ─────────────────────────────────────────────
+// AUTH & NAV
+// ─────────────────────────────────────────────
+function renderIconPicker() {
+  document.getElementById("icon-picker").innerHTML = ICONS.map(ic =>
+    `<span class="icon-opt${ic===S.selIcon?" sel":""}" onclick="selIcon('${ic}')">${ic}</span>`
+  ).join("");
+}
+function selIcon(ic) { S.selIcon = ic; renderIconPicker(); }
+
+function registerTeam() {
+  const n = document.getElementById("inp-team").value.trim();
+  const icon = S.selIcon;
+  const errEl = document.getElementById("name-err");
+  errEl.style.display = "none";
+  if (!n) { errEl.textContent = "Skriv inn et lagnavn!"; errEl.style.display = "block"; return; }
+  const taken = Object.values(G.teams).some(t => t.name.toLowerCase() === n.toLowerCase() && t.icon === icon);
+  if (taken) { errEl.textContent = `${icon} "${n}" er allerede tatt — velg annet navn eller symbol!`; errEl.style.display = "block"; return; }
+  S.teamName = n; S.teamIcon = icon; S.teamKey = n + icon;
+  if (!G.teams[S.teamKey]) G.teams[S.teamKey] = {name:n,icon,done:{},adminPts:0,key:S.teamKey};
+  saveG(); showNav(false); go("bingo");
+}
+
+function tryAdmin() {
+  if (document.getElementById("inp-pw").value !== ADMIN_PW) return alert("Feil passord!");
+  S.isAdmin = true; S.teamName = "__admin__"; S.teamKey = "__admin__";
+  showNav(true); go("admin");
+}
+
+function logout() {
+  S = {teamName:"",teamIcon:"🦁",isAdmin:false,selIcon:ICONS[0],teamKey:""};
+  document.getElementById("main-nav").style.display = "none";
+  const an = document.getElementById("nav-admin"); if (an) an.remove();
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("s-setup").classList.add("active");
+  document.getElementById("inp-team").value = "";
+  document.getElementById("inp-pw").value = "";
+  document.getElementById("name-err").style.display = "none";
+  renderIconPicker();
+}
+
+function showNav(isAdmin) {
+  const nav = document.getElementById("main-nav");
+  nav.style.display = "flex";
+  if (isAdmin && !document.getElementById("nav-admin")) {
+    const b = document.createElement("button");
+    b.id = "nav-admin"; b.onclick = () => go("admin");
+    b.innerHTML = `<i class="ti ti-settings" aria-hidden="true"></i>Admin`;
+    nav.appendChild(b);
+  }
+}
+
+function go(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+  document.getElementById("s-"+id).classList.add("active");
+  const nb = document.getElementById("nav-"+id); if (nb) nb.classList.add("active");
+  if (id === "bingo") renderBingo();
+  if (id === "lb") renderLB();
+  if (id === "map") renderMap();
+  if (id === "admin") renderAdmin("overview");
+}
+
+// ─────────────────────────────────────────────
+// BINGO
+// ─────────────────────────────────────────────
+function renderBingo() {
+  const done = myDone(); const tlist = tasks();
+  const completed = Object.values(done).filter(v => v === true).length;
+  const pts = teamPts(S.teamKey);
+  document.getElementById("bingo-title").textContent = `${S.teamIcon} ${S.teamName}`;
+  document.getElementById("bingo-sub").textContent = `${completed} av ${tlist.length} fullført`;
+  document.getElementById("pts-text").textContent = `${pts} p`;
+  document.getElementById("prog-text").textContent = `${completed} av ${tlist.length}`;
+  document.getElementById("prog-fill").style.width = `${tlist.length ? Math.round(completed/tlist.length*100) : 0}%`;
+  let h = `<div></div>`;
+  COLS.forEach(c => h += `<div class="bingo-header">${c}</div>`);
+  ROWS.forEach((pr,ri) => {
+    h += `<div class="bingo-pts">${pr}p</div>`;
+    COLS.forEach((_,ci) => {
+      const task = tlist.find(t => t.col===ci && t.row===ri);
+      if (!task) { h += `<div class="bingo-cell" style="opacity:.2">—</div>`; return; }
+      const d = done[task.id];
+      h += `<div class="bingo-cell ${d===true?"done":d==="pending"?"pending":""}" onclick="openTask('${task.id}')">
+        <span>${task.title}</span><span class="ccode">#${task.id}</span>
+      </div>`;
+    });
+  });
+  document.getElementById("bingo-grid").innerHTML = h;
+}
+
+// ─────────────────────────────────────────────
+// LEADERBOARD
+// ─────────────────────────────────────────────
+function renderLB() {
+  const sorted = Object.values(G.teams).map(t => ({...t,total:teamPts(t.key||t.name)})).sort((a,b) => b.total-a.total);
+  const medals = ["🥇","🥈","🥉"];
+  document.getElementById("lb-list").innerHTML = sorted.length ? sorted.map((t,i) => {
+    const dc = Object.values(t.done||{}).filter(v => v===true).length;
+    return `<div class="lb-row">
+      <div style="font-size:26px;min-width:36px">${medals[i]||`<span style="font-size:16px;color:var(--muted)">${i+1}</span>`}</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:600">${t.icon||""} ${t.name}</div>
+      <div style="font-size:12px;color:var(--muted)">${dc} oppgaver fullført</div></div>
+      <div style="font-size:18px;color:var(--cm);font-weight:700">${teamPts(t.key||t.name)}p</div>
+    </div>`;
+  }).join("") : `<p style="color:var(--muted);text-align:center;padding:32px">Ingen lag registrert ennå</p>`;
+}
+
+// ─────────────────────────────────────────────
+// MAP
+// ─────────────────────────────────────────────
+function renderMap() {
+  const done = myDone(); let pins = "", list = "";
+  tasks().forEach(task => {
+    const pos = MAP_POS[task.id]; if (!pos) return;
+    const d = done[task.id];
+    pins += `<div class="map-pin ${d===true?"done":d==="pending"?"pending":"open"}" style="left:${pos.x}%;top:${pos.y}%" onclick="openTask('${task.id}')">${task.id}</div>`;
+    const icon = d===true?"ti-check":d==="pending"?"ti-clock":"ti-circle";
+    const col = d===true?"var(--cm)":d==="pending"?"var(--ca)":"var(--muted)";
+    list += `<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="openTask('${task.id}')">
+      <i class="ti ${icon}" style="color:${col};font-size:18px;min-width:18px" aria-hidden="true"></i>
+      <div style="flex:1;font-size:14px">${task.title}</div>
+      <div style="font-size:13px;color:var(--cm);font-weight:600">${task.pts}p</div>
+      <div style="font-size:11px;color:var(--muted)">#${task.id}</div>
+    </div>`;
+  });
+  document.getElementById("map-pins").innerHTML = pins;
+  document.getElementById("map-task-list").innerHTML = list;
+}
+
+// ─────────────────────────────────────────────
+// TASK MODAL
+// ─────────────────────────────────────────────
+function openTask(id) {
+  if (!S.teamName) return alert("Registrer laget ditt først!");
+  const task = tasks().find(t => t.id === id); if (!task) return;
+  const isDone = myDone()[id];
+  let h = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span class="pill ${task.type==='admin'?'pill-admin':task.type==='multi'?'pill-multi':'pill-auto'}">${task.type==='admin'?'Admin bedømmer':task.type==='multi'?'Fler-felt':'Quiz'}</span>
+    <span style="font-size:12px;color:var(--muted);margin-left:auto">${task.pts}p · #${task.id}</span>
+  </div>
+  <h3 style="margin-bottom:8px">${task.title}</h3>
+  <p style="font-size:15px;color:var(--muted);margin-bottom:16px;line-height:1.6">${task.question}</p>`;
+
+  if (isDone === true) {
+    h += `<div class="feedback ok"><i class="ti ti-check"></i> Fullført! +${task.pts}p</div>`;
+  } else if (isDone === "pending") {
+    h += `<div class="feedback wait"><i class="ti ti-clock"></i> Innlevert — venter på admin</div>`;
+  } else {
+    h += `<div class="field-row">
+      <div class="field-label">Stasjonskode</div>
+      <input type="text" id="mc" placeholder="4-sifret kode" maxlength="4" inputmode="numeric"
+        style="letter-spacing:8px;font-size:24px;text-align:center;margin-top:6px"/>
+    </div>`;
+    if (task.type === "quiz") {
+      h += `<div class="field-row" id="ans-section" style="display:none">
+        <div class="field-label">Svar${task.hint ? ` — hint: ${task.hint}` : ""}</div>
+        <input type="text" id="ma0" placeholder="Skriv svar her" autocomplete="off" autocorrect="off" autocapitalize="off"/>
+      </div>`;
+    } else if (task.type === "multi") {
+      h += `<div id="ans-section" style="display:none">`;
+      task.fields.forEach((f,i) => h += `<div class="field-row"><div class="field-label">${f.label}</div><input type="text" id="ma${i}" placeholder="Svar" autocomplete="off"/></div>`);
+      h += `</div>`;
+    } else {
+      h += `<div id="ans-section" style="display:none;background:var(--cal);padding:12px;border-radius:var(--radius-sm);font-size:14px;color:var(--cad);line-height:1.5;margin-top:8px">Utfør oppgaven og send inn. Admin bedømmer og gir poeng manuelt.</div>`;
+    }
+    h += `<div id="mfb"></div>
+    <button class="primary" id="submit-btn" style="display:none" onclick="submitTask('${id}')">Send inn</button>`;
+  }
+  h += `<button onclick="closeModal()" style="width:100%;margin-top:10px;padding:13px;border:0.5px solid var(--border);background:none;border-radius:var(--radius-sm);cursor:pointer;color:var(--muted);font-size:15px;font-family:inherit">Lukk</button>`;
+
+  document.getElementById("modal-body").innerHTML = `<div class="modal-handle"></div>${h}`;
+  document.getElementById("modal-bg").classList.add("show");
+
+  const codeInput = document.getElementById("mc");
+  if (codeInput) {
+    codeInput.addEventListener("input", () => {
+      const v = codeInput.value.trim();
+      const ansSection = document.getElementById("ans-section");
+      const submitBtn = document.getElementById("submit-btn");
+      if (v.length === 4) {
+        if (ansSection) ansSection.style.display = "block";
+        if (submitBtn) submitBtn.style.display = "block";
+      } else {
+        if (ansSection) ansSection.style.display = "none";
+        if (submitBtn) submitBtn.style.display = "none";
+      }
+    });
+  }
+}
+
+function closeModal() { document.getElementById("modal-bg").classList.remove("show"); }
+document.getElementById("modal-bg").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal-bg")) closeModal();
+});
+
+function submitTask(id) {
+  const task = tasks().find(t => t.id === id);
+  const code = (document.getElementById("mc")?.value||"").trim();
+  const fb = document.getElementById("mfb");
+  if (code !== task.code) { fb.innerHTML = `<div class="feedback err"><i class="ti ti-x"></i> Feil stasjonskode!</div>`; return; }
+  if (task.type === "quiz") {
+    const raw = document.getElementById("ma0")?.value || "";
+    if (norm(raw) === norm(task.answer)) markDone(id, task.pts, fb);
+    else fb.innerHTML = `<div class="feedback err"><i class="ti ti-x"></i> Feil svar — prøv igjen!</div>`;
+  } else if (task.type === "multi") {
+    const hasAnswers = task.fields.some(f => f.answer && f.answer !== "");
+    if (!hasAnswers) { pendingTask(id, fb); return; }
+    const allOk = task.fields.every((f,i) => !f.answer || norm(document.getElementById(`ma${i}`)?.value||"") === norm(f.answer));
+    if (allOk) markDone(id, task.pts, fb);
+    else fb.innerHTML = `<div class="feedback err"><i class="ti ti-x"></i> Ett eller flere svar er feil!</div>`;
+  } else pendingTask(id, fb);
+}
+
+function ensureTeam() {
+  if (!G.teams[S.teamKey]) G.teams[S.teamKey] = {name:S.teamName,icon:S.teamIcon,done:{},adminPts:0,key:S.teamKey};
+}
+function pendingTask(id, fb) {
+  ensureTeam(); G.teams[S.teamKey].done[id] = "pending"; saveG();
+  fb.innerHTML = `<div class="feedback wait"><i class="ti ti-clock"></i> Sendt! Venter på godkjenning.</div>`;
+}
+function markDone(id, pts, fb) {
+  ensureTeam(); G.teams[S.teamKey].done[id] = true; saveG();
+  fb.innerHTML = `<div class="feedback ok"><i class="ti ti-check"></i> Riktig! +${pts}p</div>`;
+  setTimeout(() => { closeModal(); renderBingo(); }, 1300);
+}
+
+// ─────────────────────────────────────────────
+// TIMER
+// ─────────────────────────────────────────────
+function startTimer() {
+  const min = parseInt(document.getElementById("timer-min").value) || 90;
+  G.timer = {running:true, endsAt:Date.now()+min*60000, minutes:min};
+  saveG(); updateTimerDisplay();
+}
+function stopTimer() { G.timer.running = false; saveG(); document.getElementById("timer-status").textContent = "Stoppet"; }
+function resetTimer() {
+  G.timer = {running:false, endsAt:null, minutes:parseInt(document.getElementById("timer-min").value)||90};
+  saveG();
+  document.getElementById("timer-bar").className = "timer-bar hidden";
+  document.getElementById("timer-status").textContent = "Ikke startet";
+}
+function updateTimerDisplay() {
+  const bar = document.getElementById("timer-bar");
+  if (!bar) return;
+  if (!G.timer.running || !G.timer.endsAt) { bar.className = "timer-bar hidden"; return; }
+  const left = Math.max(0, G.timer.endsAt - Date.now());
+  const mins = Math.floor(left / 60000);
+  const secs = Math.floor((left % 60000) / 1000);
+  const str = `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+  bar.textContent = str;
+  bar.className = `timer-bar${mins < 10 ? " warn" : ""}`;
+  const statusEl = document.getElementById("timer-status");
+  if (statusEl) statusEl.textContent = left > 0 ? `Kjører — ${str} igjen` : "Tid er ute!";
+  if (left === 0) { G.timer.running = false; bar.textContent = "Tid er ute! ⏰"; }
+}
+
+// ─────────────────────────────────────────────
+// ADMIN
+// ─────────────────────────────────────────────
+function renderAdmin(tab) { aTab(tab, null); }
+function aTab(tab, btn) {
+  document.querySelectorAll(".atab button").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  else { const bs = document.querySelectorAll(".atab button"); const m = {overview:0,teams:1,tasks:2,newtask:3}; if (bs[m[tab]]) bs[m[tab]].classList.add("active"); }
+  ["overview","teams","tasks","newtask"].forEach(t => { const el = document.getElementById("a-"+t); if (el) el.style.display = "none"; });
+  const el = document.getElementById("a-"+tab); if (el) el.style.display = "block";
+  if (tab === "overview") renderAOverview();
+  if (tab === "teams") renderATeams();
+  if (tab === "tasks") renderATasks();
+  if (tab === "newtask") renderANewTask();
+}
+
+function renderAOverview() {
+  const teams = Object.values(G.teams);
+  const sorted = teams.map(t => ({...t,total:teamPts(t.key||t.name)})).sort((a,b) => b.total-a.total);
+  const pending = teams.reduce((s,t) => s+Object.values(t.done||{}).filter(v => v==="pending").length, 0);
+  document.getElementById("a-overview").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="background:var(--cl);border-radius:var(--radius-sm);padding:14px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:var(--cg)">${teams.length}</div>
+        <div style="font-size:12px;color:var(--cm)">Lag</div>
+      </div>
+      <div style="background:${pending?"var(--cal)":"var(--cl)"};border-radius:var(--radius-sm);padding:14px;text-align:center">
+        <div style="font-size:28px;font-weight:700;color:${pending?"var(--cad)":"var(--cg)"}">${pending}</div>
+        <div style="font-size:12px;color:${pending?"var(--ca)":"var(--cm)"}">Venter godkj.</div>
+      </div>
+    </div>
+    <h3 style="margin-bottom:10px">Live stilling</h3>
+    ${sorted.map((t,i) => { const m=["🥇","🥈","🥉"]; return `<div class="lb-row">
+      <div style="font-size:22px;min-width:30px">${m[i]||(i+1)}</div>
+      <div style="flex:1;font-size:15px;font-weight:600">${t.icon||""} ${t.name}</div>
+      <div style="color:var(--cm);font-weight:700;font-size:15px">${teamPts(t.key||t.name)}p</div>
+    </div>`; }).join("")||`<p style="color:var(--muted)">Ingen lag ennå</p>`}
+    <button style="width:100%;background:var(--ca);color:#fff;border:none;padding:13px;border-radius:var(--radius-sm);font-size:14px;cursor:pointer;margin-top:16px;min-height:48px;font-family:inherit"
+      onclick="if(confirm('Reset alle lagdata?')){G.teams={};saveG();renderAOverview()}">Reset alle lag</button>`;
+}
+
+function renderATeams() {
+  const teams = Object.values(G.teams);
+  document.getElementById("a-teams").innerHTML = teams.length ? teams.map(t => {
+    const pending = Object.entries(t.done||{}).filter(([,v]) => v === "pending");
+    const key = t.key || t.name;
+    return `<div class="card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:20px">${t.icon||""}</span>
+        <span style="font-weight:600;flex:1;font-size:15px">${t.name}</span>
+        <span style="color:var(--cm);font-weight:700;font-size:15px">${teamPts(key)}p</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">${Object.values(t.done||{}).filter(v => v===true).length} fullført · ${pending.length} venter</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:${pending.length?'12px':'0'}">
+        <span style="font-size:14px">Bonuspoeng:</span>
+        <input type="number" style="width:72px;text-align:center;margin:0" id="bp-${key.replace(/\W/g,'_')}" value="${t.adminPts||0}" min="0"/>
+        <button class="btn-sm" onclick="setBonus('${key}')">Sett</button>
+      </div>
+      ${pending.map(([tid]) => { const task = tasks().find(x => x.id===tid);
+        return `<div style="margin-top:8px;padding:12px;background:var(--cal);border-radius:var(--radius-sm);font-size:14px">
+          <strong>${task?.title||tid}</strong> — venter godkjenning
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button onclick="approve('${key}','${tid}')" style="flex:1;padding:10px;background:var(--cl);color:var(--cg);border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;min-height:44px;font-family:inherit">Godkjenn +${task?.pts}p</button>
+            <button onclick="reject('${key}','${tid}')" style="flex:1;padding:10px;background:#FCEBEB;color:#791F1F;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;min-height:44px;font-family:inherit">Avvis</button>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }).join("") : `<p style="color:var(--muted)">Ingen lag registrert ennå</p>`;
+}
+
+function setBonus(key) {
+  const k = "bp-"+key.replace(/\W/g,"_");
+  const v = parseInt(document.getElementById(k)?.value||0);
+  if (G.teams[key]) G.teams[key].adminPts = v;
+  saveG(); renderATeams();
+}
+function approve(key, tid) { if (G.teams[key]) G.teams[key].done[tid] = true; saveG(); renderATeams(); renderAOverview(); }
+function reject(key, tid) { if (G.teams[key]) delete G.teams[key].done[tid]; saveG(); renderATeams(); }
+
+function renderATasks() {
+  document.getElementById("a-tasks").innerHTML = tasks().map((t,i) => `
+    <div class="task-card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-weight:600;flex:1;font-size:14px">${t.title}</span>
+        <span class="pill ${t.type==='admin'?'pill-admin':t.type==='multi'?'pill-multi':'pill-auto'}">${t.pts}p</span>
+        <button class="btn-icon" onclick="editTask(${i})" aria-label="Rediger"><i class="ti ti-edit" aria-hidden="true"></i></button>
+        <button class="btn-icon" style="color:var(--ca)" onclick="delTask(${i})" aria-label="Slett"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      </div>
+      <div style="font-size:12px;color:var(--muted)">Kode: <strong>${t.code}</strong> · #${t.id} · Rad ${t.row+1} · ${COLS[t.col]}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${t.question.slice(0,80)}${t.question.length>80?"…":""}</div>
+      ${t.answer ? `<div style="font-size:12px;margin-top:3px">Fasit: <strong>${t.answer}</strong></div>` : ""}
+    </div>`).join("") +
+    `<div style="text-align:center;margin-top:12px">
+      <button class="btn-sm" onclick="aTab('newtask',null)"><i class="ti ti-plus" aria-hidden="true"></i> Ny oppgave</button>
+    </div>`;
+}
+
+function delTask(i) { if (!confirm("Slette denne oppgaven?")) return; G.tasks.splice(i,1); saveG(); renderATasks(); }
+function editTask(i) { renderANewTask(G.tasks[i], i); aTab("newtask", null); }
+
+function renderANewTask(existing, editIdx) {
+  const isEdit = editIdx !== undefined;
+  const t = existing || {id:"",col:0,row:0,pts:10,title:"",type:"quiz",question:"",answer:"",hint:"",code:"",fields:[]};
+  document.getElementById("a-newtask").innerHTML = `
+    <div class="card">
+      <h3 style="margin-bottom:14px">${isEdit ? "Rediger oppgave" : "Ny oppgave"}</h3>
+      <div class="field-row"><div class="field-label">Tittel</div><input type="text" id="nt-title" value="${t.title}" placeholder="Kort tittel"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field-row"><div class="field-label">Rad</div>
+          <select id="nt-row">${[0,1,2].map(r => `<option value="${r}"${t.row===r?" selected":""}>${r+1} — ${ROWS[r]}p</option>`).join("")}</select>
+        </div>
+        <div class="field-row"><div class="field-label">Kolonne</div>
+          <select id="nt-col">${[0,1,2].map(c => `<option value="${c}"${t.col===c?" selected":""}>${COLS[c]}</option>`).join("")}</select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field-row"><div class="field-label">Poeng</div>
+          <select id="nt-pts">${[10,20,30].map(p => `<option${t.pts===p?" selected":""}>${p}</option>`).join("")}</select>
+        </div>
+        <div class="field-row"><div class="field-label">Type</div>
+          <select id="nt-type" onchange="renderNTF()">
+            <option value="quiz"${t.type==="quiz"?" selected":""}>Quiz</option>
+            <option value="multi"${t.type==="multi"?" selected":""}>Fler-felt</option>
+            <option value="admin"${t.type==="admin"?" selected":""}>Admin</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field-row"><div class="field-label">Stasjonskode</div><input type="text" id="nt-code" value="${t.code}" placeholder="1234" maxlength="4" inputmode="numeric"/></div>
+        <div class="field-row"><div class="field-label">Oppgave-ID</div><input type="text" id="nt-id" value="${t.id}" placeholder="1a"/></div>
+      </div>
+      <div class="field-row"><div class="field-label">Spørsmål / beskrivelse</div><textarea id="nt-q">${t.question}</textarea></div>
+      <div id="nt-fields"></div>
+      <button class="primary" onclick="saveTask(${isEdit ? editIdx : 'undefined'})">${isEdit ? "Lagre endringer" : "Legg til oppgave"}</button>
+      <button class="btn-sm" style="width:100%;margin-top:8px" onclick="aTab('tasks',null)">Avbryt</button>
+    </div>`;
+  renderNTF(t);
+}
+
+function renderNTF(existing) {
+  const type = document.getElementById("nt-type")?.value;
+  const t = existing || {answer:"",hint:"",fields:[]};
+  let h = "";
+  if (type === "quiz") {
+    h = `<div class="field-row"><div class="field-label">Fasit (case-insensitiv, mellomrom ignoreres)</div>
+      <input type="text" id="nt-ans" value="${t.answer||""}" placeholder="riktig svar"/></div>
+    <div class="field-row"><div class="field-label">Hint (valgfritt)</div>
+      <input type="text" id="nt-hint" value="${t.hint||""}" placeholder="f.eks. Starter på S"/></div>`;
+  } else if (type === "multi") {
+    h = `<div class="field-label" style="margin-bottom:8px">Felt — label + fasit (blank = ingen autosjekk)</div>`;
+    for (let i = 0; i < 4; i++) {
+      const f = (t.fields||[])[i] || {label:"",answer:""};
+      h += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <input type="text" id="ntfl${i}" placeholder="Feltlabel" value="${f.label||""}"/>
+        <input type="text" id="ntfa${i}" placeholder="Fasit" value="${f.answer||""}"/>
+      </div>`;
+    }
+  }
+  document.getElementById("nt-fields").innerHTML = h;
+}
+
+function saveTask(editIdx) {
+  const type = document.getElementById("nt-type").value;
+  const task = {
+    id: document.getElementById("nt-id").value.trim(),
+    col: parseInt(document.getElementById("nt-col").value),
+    row: parseInt(document.getElementById("nt-row").value),
+    pts: parseInt(document.getElementById("nt-pts").value),
+    title: document.getElementById("nt-title").value.trim(),
+    type, question: document.getElementById("nt-q").value.trim(),
+    code: document.getElementById("nt-code").value.trim(),
+    answer:"", hint:"", fields:[]
+  };
+  if (!task.id || !task.title || !task.code || !task.question) return alert("Fyll ut alle felt!");
+  if (type === "quiz") {
+    task.answer = (document.getElementById("nt-ans")?.value||"").trim();
+    task.hint = (document.getElementById("nt-hint")?.value||"").trim();
+  }
+  if (type === "multi") {
+    for (let i = 0; i < 4; i++) {
+      const l = (document.getElementById(`ntfl${i}`)?.value||"").trim();
+      const a = (document.getElementById(`ntfa${i}`)?.value||"").trim();
+      if (l) task.fields.push({label:l, answer:a||null});
+    }
+  }
+  if (editIdx !== undefined && editIdx !== "undefined") G.tasks[editIdx] = task;
+  else G.tasks.push(task);
+  saveG(); renderATasks(); aTab("tasks", null);
+}
+
+// ─────────────────────────────────────────────
+// BOOT
+// ─────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
