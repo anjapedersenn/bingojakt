@@ -19,9 +19,9 @@ function saveSession(s: SessionState) {
 export function useTeam() {
   const [session, setSession] = useState<SessionState | null>(loadSession)
 
-  const login = useCallback((teamName: string, teamIcon: string) => {
+  const login = useCallback((teamKey: string, teamName: string, teamIcon: string) => {
     const s: SessionState = {
-      teamKey: teamName + teamIcon,
+      teamKey,
       teamName,
       teamIcon,
       isAdmin: false,

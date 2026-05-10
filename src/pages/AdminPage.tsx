@@ -7,7 +7,7 @@ import AdminTaskList from '../components/admin/AdminTaskList'
 import AdminTaskEditor from '../components/admin/AdminTaskEditor'
 import type { Task } from '../types'
 
-type AdminTab = 'overview' | 'teams' | 'tasks' | 'editor'
+type AdminTab = 'overview' | 'teams' | 'tasks' | 'editor' | 'settings'
 
 export default function AdminPage() {
   const {
@@ -20,12 +20,15 @@ export default function AdminPage() {
     deleteDone,
     writeAdminPts,
     resetAllTeams,
+    writeConfig,
   } = useApp()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
   const [editingTask, setEditingTask] = useState<Task | null | undefined>(undefined)
   const [timerMinutes, setTimerMinutes] = useState(String(gameState.timer.minutes))
+  const [draftRules, setDraftRules] = useState(gameState.config.rules)
+  const [draftPhone, setDraftPhone] = useState(gameState.config.phone)
 
   const { timer } = gameState
 
@@ -69,6 +72,7 @@ export default function AdminPage() {
     { id: 'overview', label: 'Oversikt' },
     { id: 'teams', label: 'Lag' },
     { id: 'tasks', label: 'Oppgaver' },
+    { id: 'settings', label: 'Innstillinger' },
   ]
 
   const tabClass = (id: AdminTab) =>
@@ -204,6 +208,38 @@ export default function AdminPage() {
           onSave={handleSaveTask}
           onCancel={handleCancelEditor}
         />
+      )}
+
+      {activeTab === 'settings' && (
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className="text-[13px] font-semibold block mb-1">Spilleregler</label>
+            <textarea
+              value={draftRules}
+              onChange={e => setDraftRules(e.target.value)}
+              rows={8}
+              className="w-full p-3 border-[0.5px] rounded-[8px] text-[14px] font-[inherit] resize-y"
+              style={{ borderColor: 'var(--color-border)', background: 'var(--color-card)', color: 'inherit' }}
+            />
+          </div>
+          <div>
+            <label className="text-[13px] font-semibold block mb-1">Telefonnummer (valgfritt)</label>
+            <input
+              type="tel"
+              value={draftPhone}
+              onChange={e => setDraftPhone(e.target.value)}
+              placeholder="+47 900 00 000"
+              className="w-full p-3 border-[0.5px] rounded-[8px] text-[14px] font-[inherit]"
+              style={{ borderColor: 'var(--color-border)', background: 'var(--color-card)', color: 'inherit' }}
+            />
+          </div>
+          <button
+            onClick={() => writeConfig({ rules: draftRules, phone: draftPhone })}
+            className="w-full bg-primary text-white border-none p-[13px] rounded-[8px] text-[14px] cursor-pointer font-[inherit] min-h-[46px]"
+          >
+            Lagre innstillinger
+          </button>
+        </div>
       )}
     </div>
   )

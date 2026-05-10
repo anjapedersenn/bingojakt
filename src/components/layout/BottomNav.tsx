@@ -10,39 +10,66 @@ export default function BottomNav({ isAdmin }: Props) {
   const inactive = 'text-[var(--color-muted)]'
   const active = 'text-primary'
 
+  const iconWrap = (isActive: boolean) =>
+    isActive ? 'bg-primary-light rounded-xl px-4 py-1' : ''
+
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] flex z-[100] border-t-[0.5px] border-[var(--color-border)]"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-107.5 flex z-100 border-t-[0.5px] border-border"
       style={{ background: 'var(--color-card)' }}
     >
       <NavLink
         to="/bingo"
         className={({ isActive }) => `${base} ${isActive ? active : inactive}`}
       >
-        <i className="ti ti-grid-dots text-[22px]" aria-hidden="true" />
-        Brett
+        {({ isActive }) => (
+          <>
+            <span className={iconWrap(isActive)}>
+              <i className="ti ti-grid-dots text-[22px]" aria-hidden="true" />
+            </span>
+            Brett
+          </>
+        )}
       </NavLink>
       <NavLink
         to="/leaderboard"
         className={({ isActive }) => `${base} ${isActive ? active : inactive}`}
       >
-        <i className="ti ti-trophy text-[22px]" aria-hidden="true" />
-        Poeng
+        {({ isActive }) => (
+          <>
+            <span className={iconWrap(isActive)}>
+              <i className="ti ti-trophy text-[22px]" aria-hidden="true" />
+            </span>
+            Poeng
+          </>
+        )}
       </NavLink>
       <NavLink
         to="/map"
         className={({ isActive }) => `${base} ${isActive ? active : inactive}`}
       >
-        <i className="ti ti-map text-[22px]" aria-hidden="true" />
-        Kart
+        {({ isActive }) => (
+          <>
+            <span className={iconWrap(isActive)}>
+              <i className="ti ti-map text-[22px]" aria-hidden="true" />
+            </span>
+            Kart
+          </>
+        )}
       </NavLink>
       {isAdmin && (
         <NavLink
           to="/admin"
           className={({ isActive }) => `${base} ${isActive ? active : inactive}`}
         >
-          <i className="ti ti-settings text-[22px]" aria-hidden="true" />
-          Admin
+          {({ isActive }) => (
+            <>
+              <span className={iconWrap(isActive)}>
+                <i className="ti ti-settings text-[22px]" aria-hidden="true" />
+              </span>
+              Admin
+            </>
+          )}
         </NavLink>
       )}
     </nav>

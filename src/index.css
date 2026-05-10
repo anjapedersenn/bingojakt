@@ -56,3 +56,33 @@ body {
 #root {
   min-height: 100vh;
 }
+
+@keyframes splash-fade {
+  0%   { opacity: 0; transform: scale(0.85); }
+  20%  { opacity: 1; transform: scale(1); }
+  80%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+.card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.splash-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  background: var(--color-bg); animation: splash-fade 3s ease forwards;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.admin-toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: var(--color-primary); color: #fff;
+  padding: 12px 22px; border-radius: var(--radius-md);
+  font-weight: 600; font-size: 15px; white-space: nowrap;
+  z-index: 500; pointer-events: none;
+  animation: toast-in 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+}

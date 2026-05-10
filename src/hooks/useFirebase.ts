@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from 'react'
 import { ref, onValue, set, remove } from 'firebase/database'
 import { db } from '../lib/firebase'
 import { objToTasksArr, tasksToFirebaseObj, DEFAULT_TASKS } from '../lib/gameLogic'
-import type { GameState, Task } from '../types'
+import type { GameState, GameConfig, Task, Team } from '../types'
+import { DEFAULT_CONFIG } from '../types'
 
 const DEFAULT_TIMER = { running: false, endsAt: null, minutes: 90 }
 
@@ -10,6 +11,7 @@ const DEFAULT_GAME_STATE: GameState = {
   teams: {},
   tasks: DEFAULT_TASKS,
   timer: DEFAULT_TIMER,
+  config: DEFAULT_CONFIG,
 }
 
 export function useFirebase() {
@@ -23,6 +25,7 @@ export function useFirebase() {
         teams?: GameState['teams']
         tasks?: Record<string, Task>
         timer?: GameState['timer']
+        config?: GameConfig
       } | null
 
       if (!d || !d.tasks) {
@@ -39,6 +42,7 @@ export function useFirebase() {
         teams: d.teams ?? {},
         tasks: objToTasksArr(d.tasks),
         timer: d.timer ?? DEFAULT_TIMER,
+        config: d.config ?? DEFAULT_CONFIG,
       })
     })
     return unsub
@@ -47,6 +51,24 @@ export function useFirebase() {
   const writeTeam = useCallback((key: string, team: object) => {
     set(ref(db, `/teams/${key}`), team)
   }, [])
+
+  const createTeam = useCallback(async (name: string, icon: string, pin: string): Promise<void> => {
+    const nameTaken = Object.values(gameState.teams).some(
+      t => t.name.toLowerCase() === name.toLowerCase()
+    )
+    if (nameTaken) throw new Error('Lagnavn er allerede tatt')
+    const key = encodeURIComponent(name.trim() + icon)
+    const team: Team = { key, name: name.trim(), icon, pin, done: {}, adminPts: 0 }
+    await set(ref(db, `/teams/${key}`), team)
+  }, [gameState.teams])
+
+  const loginTeam = useCallback(async (name: string, pin: string): Promise<Team> => {
+    const team = Object.values(gameState.teams).find(
+      t => t.name.toLowerCase() === name.toLowerCase()
+    )
+    if (!team || team.pin !== pin) throw new Error('Feil lagnavn eller PIN')
+    return team
+  }, [gameState.teams])
 
   const writeDone = useCallback((teamKey: string, taskId: string, value: true | 'pending') => {
     set(ref(db, `/teams/${teamKey}/done/${taskId}`), value)
@@ -76,10 +98,16 @@ export function useFirebase() {
     set(ref(db, '/teams'), {})
   }, [])
 
+  const writeConfig = useCallback((config: GameConfig) => {
+    set(ref(db, '/config'), config)
+  }, [])
+
   return {
     gameState,
     fbReady,
     writeTeam,
+    createTeam,
+    loginTeam,
     writeDone,
     deleteDone,
     writeAdminPts,
@@ -87,5 +115,6 @@ export function useFirebase() {
     deleteTask,
     writeTimer,
     resetAllTeams,
+    writeConfig,
   }
 }

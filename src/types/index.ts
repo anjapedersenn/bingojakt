@@ -12,14 +12,31 @@ export interface Task {
   answer?: string
   hint?: string
   fields?: { label: string; answer: string | null }[]
+  emoji?: string
 }
 
 export interface Team {
   key: string
   name: string
   icon: string
+  pin: string
   done: Record<string, true | 'pending'>
   adminPts: number
+}
+
+export interface GameConfig {
+  rules: string
+  phone: string
+}
+
+export const DEFAULT_CONFIG: GameConfig = {
+  rules:
+    '1. Finn stasjonskoden\n' +
+    '2. Tast inn koden for å låse opp oppgaven\n' +
+    '3. Svar riktig for automatiske poeng\n' +
+    '4. Ved utfordringer: send inn svar og vent på poeng fra admin\n' +
+    '5. Laget med flest poeng vinner! 🏆',
+  phone: '',
 }
 
 export interface GameState {
@@ -30,6 +47,7 @@ export interface GameState {
     endsAt: number | null
     minutes: number
   }
+  config: GameConfig
 }
 
 export interface SessionState {
@@ -39,7 +57,7 @@ export interface SessionState {
   isAdmin: boolean
 }
 
-export const ICONS = ['🦁','🐺','🦊','🦋','🐬','🦅','🌊','🍋','🌸','🦄','🍷','🫒','🌻','🥂','🌿','🦩','🐙','🌴'] as const
+export const ICONS = ['🦁','🦋','🐬','🦅','🍋','🌸','🦄','🍷','🥂','🦩','🐙','🌴'] as const
 
 export const COLS = ['Trivia', 'Fysisk', 'Brains'] as const
 

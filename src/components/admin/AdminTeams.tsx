@@ -41,7 +41,7 @@ export default function AdminTeams({ teams, tasks, onApprove, onReject, onSetBon
               <div>
                 <div className="text-[15px] font-semibold">{team.name}</div>
                 <div className="text-[12px] text-[var(--color-muted)]">
-                  {doneCount} fullført · {pendingTasks.length} venter ·{' '}
+                  PIN: {team.pin ?? '—'} · {doneCount} fullført · {pendingTasks.length} venter ·{' '}
                   {teamPts(team, tasks)}p totalt
                 </div>
               </div>

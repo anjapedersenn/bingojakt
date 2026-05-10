@@ -104,9 +104,9 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
         <input className={inputClass} style={inputStyle} value={title} onChange={e => setTitle(e.target.value)} placeholder="Oppgavetittel" />
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         <div>
-          <label className={labelClass}>Kolonne</label>
+          <label className={labelClass}>Kategori</label>
           <select className={inputClass} style={inputStyle} value={col} onChange={e => setCol(Number(e.target.value))}>
             <option value={0}>0 – Trivia</option>
             <option value={1}>1 – Fysisk</option>
@@ -114,25 +114,17 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
           </select>
         </div>
         <div>
-          <label className={labelClass}>Rad</label>
+          <label className={labelClass}>Poeng</label>
           <select className={inputClass} style={inputStyle} value={row} onChange={e => setRow(Number(e.target.value))}>
             <option value={0}>0 – 10p</option>
             <option value={1}>1 – 20p</option>
             <option value={2}>2 – 30p</option>
           </select>
         </div>
-        <div>
-          <label className={labelClass}>Poeng</label>
-          <select className={inputClass} style={inputStyle} value={pts} onChange={e => setPts(Number(e.target.value))}>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={30}>30</option>
-          </select>
-        </div>
       </div>
 
       <div className="mb-3">
-        <label className={labelClass}>Type</label>
+        <label className={labelClass}>Oppgavetype</label>
         <select className={inputClass} style={inputStyle} value={type} onChange={e => setType(e.target.value as TaskType)}>
           <option value="quiz">Quiz</option>
           <option value="multi">Fler-felt</option>

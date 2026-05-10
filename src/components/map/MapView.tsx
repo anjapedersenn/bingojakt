@@ -45,16 +45,22 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
         </span>
         <span>
           <span className="inline-block w-[10px] h-[10px] rounded-full bg-accent mr-1 align-middle" />
-          Venter
+          Venter poeng
         </span>
         <span>
           <span
             className="inline-block w-[10px] h-[10px] rounded-full border-[1.5px] border-primary mr-1 align-middle"
             style={{ background: 'var(--color-card)' }}
           />
-          Åpen
+          Ikke startet
         </span>
       </div>
+
+    {/* const HEADER_STYLES = [
+      'bg-primary-light text-primary-dark',
+      'bg-accent-light text-accent-dark',
+      'bg-[#ede8f5] text-[#5a4080]',
+      ] */}
 
       {tasks.map(task => {
         const d = done[task.id]

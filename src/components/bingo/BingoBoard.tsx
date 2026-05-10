@@ -8,42 +8,41 @@ interface Props {
   onOpenTask: (id: string) => void
 }
 
+const HEADER_STYLES = [
+  'bg-primary-light text-primary-dark',
+  'bg-accent-light text-accent-dark',
+  'bg-[#ede8f5] text-[#5a4080]',
+]
+
+
+
 export default function BingoBoard({ tasks, done, onOpenTask }: Props) {
   return (
     <div
-      className="grid mb-[14px]"
-      style={{ gridTemplateColumns: '34px 1fr 1fr 1fr', gap: '4px' }}
+      className="grid mb-3.5"
+      style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}
     >
-      <div />
-      {COLS.map(col => (
+      {COLS.map((col, ci) => (
         <div
           key={col}
-          className="text-[11px] font-semibold text-primary text-center py-[5px] px-[2px]"
+          className={`text-[11px] font-semibold text-center py-[5px] px-[2px] rounded-[6px] ${HEADER_STYLES[ci]}`}
         >
           {col}
         </div>
       ))}
-      {ROWS.map((pts, ri) => (
-        <>
-          <div
-            key={`pts-${ri}`}
-            className="text-[11px] font-medium text-[var(--color-muted)] flex items-center justify-center"
-          >
-            {pts}p
-          </div>
-          {COLS.map((_, ci) => {
-            const task = tasks.find(t => t.row === ri && t.col === ci) ?? null
-            return (
-              <BingoCell
-                key={`${ri}-${ci}`}
-                task={task}
-                status={task ? (done[task.id] as true | 'pending' | undefined) : undefined}
-                onClick={() => task && onOpenTask(task.id)}
-              />
-            )
-          })}
-        </>
-      ))}
+      {ROWS.map((_, ri) =>
+        COLS.map((__, ci) => {
+          const task = tasks.find(t => t.row === ri && t.col === ci) ?? null
+          return (
+            <BingoCell
+              key={`${ri}-${ci}`}
+              task={task}
+              status={task ? (done[task.id] as true | 'pending' | undefined) : undefined}
+              onClick={() => task && onOpenTask(task.id)}
+            />
+          )
+        })
+      )}
     </div>
   )
 }

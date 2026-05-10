@@ -6,11 +6,13 @@ import { teamPts } from '../lib/gameLogic'
 import ScreenHero from '../components/layout/ScreenHero'
 import BingoBoard from '../components/bingo/BingoBoard'
 import TaskModal from '../components/task/TaskModal'
+import HelpModal from '../components/HelpModal'
 
 export default function BingoPage() {
   const { gameState, session, logout, writeDone } = useApp()
   const navigate = useNavigate()
   const [openTaskId, setOpenTaskId] = useState<string | null>(null)
+  const [showHelp, setShowHelp] = useState(false)
 
   const team = gameState.teams[session.teamKey]
   const { done, completedCount, totalCount } = useTasks(gameState.tasks, team)
@@ -37,23 +39,33 @@ export default function BingoPage() {
 
       <div className="flex items-center justify-between mb-[10px]">
         <div>
-          <div className="text-[17px] font-semibold">
+          <div className="text-xl font-semibold">
             {session.teamIcon} {session.teamName}
           </div>
           <div className="text-[12px] text-[var(--color-muted)]">
             {completedCount} av {totalCount} fullført
           </div>
         </div>
-        <button
-          onClick={() => {
-            logout()
-            navigate('/')
-          }}
-          className="flex items-center gap-[6px] text-[13px] text-[var(--color-muted)] border-[0.5px] rounded-[8px] px-3 py-2 cursor-pointer min-h-[40px] font-[inherit] bg-transparent"
-          style={{ borderColor: 'var(--color-border)' }}
-        >
-          <i className="ti ti-logout" aria-hidden="true" /> Logg ut
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              logout()
+              navigate('/')
+            }}
+            className="flex items-center gap-[6px] text-[13px] text-[var(--color-muted)] border-[0.5px] rounded-[8px] px-3 py-2 cursor-pointer min-h-[40px] font-[inherit] bg-transparent"
+            style={{ borderColor: 'var(--color-border)' }}
+          >
+            <i className="ti ti-logout" aria-hidden="true" /> Logg ut
+          </button>
+          <button
+            onClick={() => setShowHelp(true)}
+            className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-[var(--color-muted)] text-[18px]"
+            style={{ borderColor: 'var(--color-border)' }}
+            aria-label="Spilleregler"
+          >
+            <i className="ti ti-help" aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
       <div className="mb-3">
@@ -61,14 +73,14 @@ export default function BingoPage() {
           <span className="text-[var(--color-muted)]">
             {completedCount} av {totalCount}
           </span>
-          <span className="text-primary font-semibold">{pts} p</span>
+          <span className="text-primary font-bold text-lg">{pts} p</span>
         </div>
         <div
-          className="h-[5px] rounded-[3px] overflow-hidden mt-[6px]"
+          className="h-2 rounded-full overflow-hidden mt-1.5"
           style={{ background: 'rgba(0,0,0,0.08)' }}
         >
           <div
-            className="h-full bg-primary rounded-[3px] transition-[width_0.3s]"
+            className="h-full bg-primary rounded-full transition-all duration-500"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -81,8 +93,8 @@ export default function BingoPage() {
       />
 
       <div className="bg-primary-light rounded-[8px] p-3 text-[13px] text-primary-dark">
-        <i className="ti ti-map-pin" aria-hidden="true" /> Finn stasjonskoden på gården for å
-        låse opp oppgaven.
+        <i className="ti ti-map-pin" aria-hidden="true" /> Finn stasjonskoden for å
+        låse opp oppgaven. Sjekk ut kartet for å finne stasjonene!
       </div>
 
       {openTask && (
@@ -93,6 +105,10 @@ export default function BingoPage() {
           onMarkDone={handleMarkDone}
           onMarkPending={handleMarkPending}
         />
+      )}
+
+      {showHelp && (
+        <HelpModal config={gameState.config} onClose={() => setShowHelp(false)} />
       )}
     </div>
   )
