@@ -31,7 +31,7 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
   const [title, setTitle] = useState(initialTask?.title ?? '')
   const [col, setCol] = useState<number>(initialTask?.col ?? 0)
   const [row, setRow] = useState<number>(initialTask?.row ?? 0)
-  const [pts, setPts] = useState<number>(initialTask?.pts ?? 10)
+  const [pts, _setPts] = useState<number>(initialTask?.pts ?? 10)
   const [type, setType] = useState<TaskType>(initialTask?.type ?? 'quiz')
   const [code, setCode] = useState(initialTask?.code ?? '')
   const [question, setQuestion] = useState(initialTask?.question ?? '')
