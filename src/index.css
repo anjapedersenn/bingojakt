@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6B7C3E;
+  --color-primary-dark: #3D4A1E;
+  --color-primary-light: #EEF2E3;
+  --color-accent: #C4622D;
+  --color-accent-light: #FAF0EB;
+  --color-accent-dark: #7A3A18;
+  --color-bg: #F5F5F0;
+  --color-card: #ffffff;
+  --color-muted: #666666;
+  --color-border: rgba(0, 0, 0, 0.1);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1a1a18;
+    --color-card: #242420;
+    --color-muted: #999999;
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-primary-light: #2a3318;
+    --color-primary-dark: #a8be6a;
+    --color-primary: #8aaa4e;
+    --color-accent-light: #3a2010;
+    --color-accent-dark: #f0a070;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg);
+  color: #1a1a1a;
+  font-size: 16px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #f0f0ec;
+  }
+}
+
+#root {
+  min-height: 100vh;
+}
