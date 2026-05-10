@@ -2,7 +2,7 @@ export default function ScreenHero() {
   return (
     <div className="bg-primary-light rounded-[12px] p-[10px_14px] mb-[14px] text-center border-[0.5px] border-primary/15">
       <div className="text-[14px] font-semibold text-primary-dark">Bingojakt</div>
-      <div className="text-[11px] text-primary">Synne &amp; Aksel gifter deg i Italia</div>
+      <div className="text-[11px] text-primary">Synne &amp; Aksel gifter seg i Italia</div>
       <div className="text-[13px] mt-1.5 leading-none">☀️ 🌸 💍 🌿 🍋 🦋 🌺 🥂 ✨ 🌻</div>
     </div>
   )

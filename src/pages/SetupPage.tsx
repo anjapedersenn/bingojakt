@@ -162,7 +162,7 @@ export default function SetupPage() {
         >
           <h2 className="text-[18px] font-semibold m-0 mb-1">Opprett nytt lag</h2>
           <p className="text-[13px] text-[var(--color-muted)] mt-0 mb-4">
-            Velg lagnavn, symbol og lag en PIN dere husker. 
+            Velg lagnavn, symbol og en PIN dere husker. 
           </p>
 
           <div className="mb-3">
@@ -222,7 +222,7 @@ export default function SetupPage() {
             {pinError && errorBox(pinError)}
           </div>
           <p className="text-[13px] text-[var(--color-muted)] mt-0 mb-4">
-            Når bruker er opprettet kan flere på laget kan logge inn på sin enhet med lagnavn og PIN.  
+            Når laget er opprettet kan flere teammedlemmer logge inn på sin enhet med lagnavn og PIN.  
           </p>
 
           <div className="text-center text-[13px] text-[var(--color-muted)] mb-3">
