@@ -38,7 +38,7 @@ export default function SetupPage() {
   }, [session, navigate])
 
   const teamList = Object.values(gameState.teams).sort((a, b) =>
-    a.name.localeCompare(b.name)
+    (a.name ?? '').localeCompare(b.name ?? '')
   )
 
   const handleCreate = async () => {

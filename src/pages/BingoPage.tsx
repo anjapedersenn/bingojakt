@@ -59,8 +59,8 @@ export default function BingoPage() {
           </button>
           <button
             onClick={() => setShowHelp(true)}
-            className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-[var(--color-muted)] text-[18px]"
-            style={{ borderColor: 'var(--color-border)' }}
+            className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-primary text-[18px]"
+            style={{ borderColor: 'var(--color-primary)' }}
             aria-label="Spilleregler"
           >
             <i className="ti ti-help" aria-hidden="true" />
@@ -93,8 +93,8 @@ export default function BingoPage() {
       />
 
       <div className="bg-primary-light rounded-[8px] p-3 text-[13px] text-primary-dark">
-        <i className="ti ti-map-pin" aria-hidden="true" /> Finn stasjonskoden for å
-        låse opp oppgaven. Sjekk ut kartet for å finne stasjonene!
+        <i className="ti ti-map-pin" aria-hidden="true" /> Finn stasjonen på kartet for å
+        løse oppgaven. 
       </div>
 
       {openTask && (

@@ -33,7 +33,6 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
   const [row, setRow] = useState<number>(initialTask?.row ?? 0)
   const [pts, _setPts] = useState<number>(initialTask?.pts ?? 10)
   const [type, setType] = useState<TaskType>(initialTask?.type ?? 'quiz')
-  const [code, setCode] = useState(initialTask?.code ?? '')
   const [question, setQuestion] = useState(initialTask?.question ?? '')
   const [answer, setAnswer] = useState(initialTask?.answer ?? '')
   const [hint, setHint] = useState(initialTask?.hint ?? '')
@@ -49,8 +48,8 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
   const labelClass = 'text-[13px] text-[var(--color-muted)] mb-[4px] block'
 
   const handleSave = () => {
-    if (!id.trim() || !title.trim() || !code.trim() || !question.trim()) {
-      alert('Fyll inn ID, tittel, kode og spørsmål.')
+    if (!id.trim() || !title.trim() || !question.trim()) {
+      alert('Fyll inn ID, tittel og spørsmål.')
       return
     }
 
@@ -61,7 +60,6 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
       row: row as 0 | 1 | 2,
       pts: pts as 10 | 20 | 30,
       type,
-      code: code.trim(),
       question: question.trim(),
     }
 
@@ -88,15 +86,9 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
         {initialTask ? 'Rediger oppgave' : 'Ny oppgave'}
       </h3>
 
-      <div className="grid grid-cols-2 gap-3 mb-3">
-        <div>
-          <label className={labelClass}>ID</label>
-          <input className={inputClass} style={inputStyle} value={id} onChange={e => setId(e.target.value)} placeholder="f.eks. 1a" />
-        </div>
-        <div>
-          <label className={labelClass}>Kode</label>
-          <input className={inputClass} style={inputStyle} value={code} onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="4 siffer" maxLength={4} />
-        </div>
+      <div className="mb-3">
+        <label className={labelClass}>ID</label>
+        <input className={inputClass} style={inputStyle} value={id} onChange={e => setId(e.target.value)} placeholder="f.eks. 1a" />
       </div>
 
       <div className="mb-3">

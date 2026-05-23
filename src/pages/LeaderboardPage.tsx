@@ -31,8 +31,8 @@ export default function LeaderboardPage() {
           </button>
           <button
             onClick={() => setShowHelp(true)}
-            className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-[var(--color-muted)] text-[18px]"
-            style={{ borderColor: 'var(--color-border)' }}
+            className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-primary text-[18px]"
+            style={{ borderColor: 'var(--color-primary)' }}
             aria-label="Spilleregler"
           >
             <i className="ti ti-help" aria-hidden="true" />

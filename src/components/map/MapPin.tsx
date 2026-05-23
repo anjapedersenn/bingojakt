@@ -1,26 +1,35 @@
+const CAT_COLORS: Record<0 | 1 | 2, string> = {
+  0: 'var(--color-primary-dark)',
+  1: 'var(--color-accent-dark)',
+  2: '#5a4080',
+}
+
 interface Props {
-  id: string
+  pts: 10 | 20 | 30
+  col: 0 | 1 | 2
   x: number
   y: number
   status: true | 'pending' | undefined
   onClick: () => void
 }
 
-export default function MapPin({ id, x, y, status, onClick }: Props) {
-  const colorClass =
+export default function MapPin({ pts, col, x, y, status, onClick }: Props) {
+  const catColor = CAT_COLORS[col]
+  const bg =
     status === true
-      ? 'bg-primary text-white border-white'
+      ? 'var(--color-primary)'
       : status === 'pending'
-        ? 'bg-accent text-white border-white'
-        : 'bg-white text-primary border-primary'
+        ? 'var(--color-accent)'
+        : 'white'
+  const color = status !== undefined ? 'white' : catColor
 
   return (
     <div
-      className={`absolute w-[30px] h-[30px] rounded-full flex items-center justify-center text-[9px] font-semibold cursor-pointer border-2 -translate-x-1/2 -translate-y-1/2 z-[2] shadow-[0_2px_6px_rgba(0,0,0,0.3)] ${colorClass}`}
-      style={{ left: `${x}%`, top: `${y}%` }}
+      className="absolute w-7.5 h-7.5 rounded-full flex items-center justify-center text-[9px] font-semibold cursor-pointer -translate-x-1/2 -translate-y-1/2 z-2 shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
+      style={{ left: `${x}%`, top: `${y}%`, background: bg, color, border: `2.5px solid ${catColor}` }}
       onClick={onClick}
     >
-      {id}
+      {pts}p
     </div>
   )
 }

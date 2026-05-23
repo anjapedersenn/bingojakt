@@ -27,7 +27,8 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
             return (
               <MapPin
                 key={task.id}
-                id={task.id}
+                pts={task.pts}
+                col={task.col}
                 x={pos.x}
                 y={pos.y}
                 status={done[task.id] as true | 'pending' | undefined}
@@ -38,7 +39,7 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
         </div>
       </div>
 
-      <div className="flex gap-[14px] text-[12px] text-[var(--color-muted)] flex-wrap mb-[14px]">
+      <div className="flex gap-[14px] text-[12px] text-muted flex-wrap mb-3.5">
         <span>
           <span className="inline-block w-[10px] h-[10px] rounded-full bg-primary mr-1 align-middle" />
           Fullført
@@ -56,36 +57,40 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
         </span>
       </div>
 
-    {/* const HEADER_STYLES = [
-      'bg-primary-light text-primary-dark',
-      'bg-accent-light text-accent-dark',
-      'bg-[#ede8f5] text-[#5a4080]',
-      ] */}
-
-      {tasks.map(task => {
-        const d = done[task.id]
-        const iconClass = d === true ? 'ti-check' : d === 'pending' ? 'ti-clock' : 'ti-circle'
-        const colorStyle =
-          d === true
-            ? 'var(--color-primary)'
-            : d === 'pending'
-              ? 'var(--color-accent)'
-              : 'var(--color-muted)'
+      {([10, 20, 30] as const).map(pts => {
+        const group = tasks.filter(t => t.pts === pts)
+        if (!group.length) return null
         return (
-          <div
-            key={task.id}
-            className="flex items-center gap-3 py-3 border-b-[0.5px] cursor-pointer"
-            style={{ borderColor: 'var(--color-border)' }}
-            onClick={() => onOpenTask(task.id)}
-          >
-            <i
-              className={`ti ${iconClass} text-[18px] min-w-[18px]`}
-              style={{ color: colorStyle }}
-              aria-hidden="true"
-            />
-            <div className="flex-1 text-[14px]">{task.title}</div>
-            <div className="text-[13px] text-primary font-semibold">{task.pts}p</div>
-            <div className="text-[11px] text-[var(--color-muted)]">#{task.id}</div>
+          <div key={pts} className="mb-4">
+            <div className="text-[11px] font-semibold text-muted uppercase tracking-wide mb-1 pt-1">
+              {pts} poeng
+            </div>
+            {group.map(task => {
+              const d = done[task.id]
+              const iconClass = d === true ? 'ti-check' : d === 'pending' ? 'ti-clock' : 'ti-circle'
+              const statusColor =
+                d === true
+                  ? 'var(--color-primary)'
+                  : d === 'pending'
+                    ? 'var(--color-accent)'
+                    : 'var(--color-muted)'
+              const catColor = ['var(--color-primary-dark)', 'var(--color-accent-dark)', '#5a4080'][task.col]
+              return (
+                <div
+                  key={task.id}
+                  className="flex items-center gap-3 py-3 border-b-[0.5px] cursor-pointer"
+                  style={{ borderColor: 'var(--color-border)' }}
+                  onClick={() => onOpenTask(task.id)}
+                >
+                  <i
+                    className={`ti ${iconClass} text-[18px] min-w-4.5`}
+                    style={{ color: statusColor }}
+                    aria-hidden="true"
+                  />
+                  <div className="flex-1 text-[14px] font-medium" style={{ color: catColor }}>{task.title}</div>
+                </div>
+              )
+            })}
           </div>
         )
       })}

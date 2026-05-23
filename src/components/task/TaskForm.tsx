@@ -17,20 +17,12 @@ const feedbackClasses = {
 }
 
 export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
-  const [code, setCode] = useState('')
   const [answers, setAnswers] = useState<string[]>(
     task.type === 'multi' ? (task.fields ?? []).map(() => '') : ['']
   )
   const [feedback, setFeedback] = useState<FeedbackState>(null)
 
-  const codeUnlocked = code.length === 4
-
   const handleSubmit = () => {
-    if (code !== task.code) {
-      setFeedback({ type: 'err', message: 'Feil stasjonskode!' })
-      return
-    }
-
     if (task.type === 'quiz') {
       if (isCorrect(task.answer, answers[0])) {
         setFeedback({ type: 'ok', message: `Riktig! +${task.pts}p` })
@@ -63,27 +55,7 @@ export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
 
   return (
     <div>
-      <div className="mb-3">
-        <div className="text-[13px] text-[var(--color-muted)] mb-[2px]">Stasjonskode</div>
-        <input
-          type="text"
-          inputMode="numeric"
-          value={code}
-          onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
-          placeholder="4-sifret kode"
-          maxLength={4}
-          className="w-full p-3 border-[0.5px] rounded-[8px] text-[24px] text-center tracking-[8px] font-mono mt-[6px]"
-          style={{
-            borderColor: 'var(--color-border)',
-            background: 'var(--color-card)',
-            color: 'inherit',
-          }}
-        />
-      </div>
-
-      {codeUnlocked && (
-        <>
-          {task.type === 'quiz' && (
+      {task.type === 'quiz' && (
             <div className="mb-3">
               <div className="text-[13px] text-[var(--color-muted)] mb-[2px]">
                 Svar{task.hint ? ` — hint: ${task.hint}` : ''}
@@ -135,7 +107,7 @@ export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
 
           {task.type === 'admin' && (
             <div className="bg-accent-light p-3 rounded-[8px] text-[14px] text-accent-dark leading-[1.5] mt-2 mb-3">
-              Utfør oppgaven og send inn. Admin bedømmer og gir poeng manuelt.
+              Marker oppgaven som fulført så tildeler admin poeng manuelt. 
             </div>
           )}
 
@@ -151,10 +123,8 @@ export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
             onClick={handleSubmit}
             className="w-full bg-primary text-white border-none p-[14px] rounded-[8px] text-[16px] cursor-pointer mt-2 min-h-[50px] font-medium font-[inherit] active:bg-primary-dark active:scale-[0.98] transition-transform"
           >
-            Send inn
+            Marker som fullført
           </button>
-        </>
-      )}
     </div>
   )
 }
