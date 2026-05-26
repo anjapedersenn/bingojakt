@@ -12,7 +12,7 @@ export function useTasks(tasks: Task[], team: Team | undefined) {
   }, [tasks])
 
   const completedCount = useMemo(
-    () => Object.values(done).filter(v => v === true).length,
+    () => Object.values(done).filter(v => v === true || typeof v === 'number').length,
     [done]
   )
 

@@ -4,7 +4,7 @@ import type { Task } from '../../types'
 
 interface Props {
   tasks: Task[]
-  done: Record<string, true | 'pending'>
+  done: Record<string, true | 'pending' | number>
   onOpenTask: (id: string) => void
 }
 
@@ -37,7 +37,7 @@ export default function BingoBoard({ tasks, done, onOpenTask }: Props) {
             <BingoCell
               key={`${ri}-${ci}`}
               task={task}
-              status={task ? (done[task.id] as true | 'pending' | undefined) : undefined}
+              status={task ? done[task.id] : undefined}
               onClick={() => task && onOpenTask(task.id)}
             />
           )

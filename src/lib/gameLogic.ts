@@ -14,6 +14,8 @@ export function teamPts(team: Team, tasks: Task[]): number {
     if (v === true) {
       const task = tasks.find(t => t.id === tid)
       if (task) p += task.pts
+    } else if (typeof v === 'number') {
+      p += v
     }
   })
   return p + (team.adminPts ?? 0)

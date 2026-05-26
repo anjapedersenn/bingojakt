@@ -13,17 +13,8 @@ interface FieldPair {
 }
 
 function toFieldPairs(fields: Task['fields']): FieldPair[] {
-  const base: FieldPair[] = [
-    { label: '', answer: '' },
-    { label: '', answer: '' },
-    { label: '', answer: '' },
-    { label: '', answer: '' },
-  ]
-  if (!fields) return base
-  return base.map((_, i) => ({
-    label: fields[i]?.label ?? '',
-    answer: fields[i]?.answer ?? '',
-  }))
+  if (!fields || fields.length === 0) return [{ label: '', answer: '' }]
+  return fields.map(f => ({ label: f.label, answer: f.answer ?? '' }))
 }
 
 export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props) {
@@ -152,7 +143,7 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
         <div className="mb-3">
           <div className={labelClass}>Felter (label + fasitsvar)</div>
           {fields.map((f, i) => (
-            <div key={i} className="grid grid-cols-2 gap-2 mb-2">
+            <div key={i} className="grid gap-2 mb-2" style={{ gridTemplateColumns: '1fr 1fr auto' }}>
               <input
                 className={inputClass}
                 style={inputStyle}
@@ -175,8 +166,25 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
                 }}
                 placeholder="Fasit (tom = ingen sjekk)"
               />
+              <button
+                type="button"
+                onClick={() => setFields(fields.filter((_, j) => j !== i))}
+                className="p-[10px] border-[0.5px] rounded-[8px] text-[14px] cursor-pointer font-[inherit] bg-transparent text-[var(--color-muted)]"
+                style={{ borderColor: 'var(--color-border)' }}
+                disabled={fields.length === 1}
+              >
+                ✕
+              </button>
             </div>
           ))}
+          <button
+            type="button"
+            onClick={() => setFields([...fields, { label: '', answer: '' }])}
+            className="w-full p-[10px] border-[0.5px] rounded-[8px] text-[14px] cursor-pointer font-[inherit] bg-transparent text-primary mt-1"
+            style={{ borderColor: 'var(--color-primary)' }}
+          >
+            + Legg til felt
+          </button>
         </div>
       )}
 

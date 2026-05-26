@@ -4,7 +4,7 @@ import { isCorrect, norm } from '../../lib/gameLogic'
 
 interface Props {
   task: Task
-  onMarkDone: () => void
+  onMarkDone: (pts?: number) => void
   onMarkPending: () => void
 }
 
@@ -32,20 +32,25 @@ export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
       }
     } else if (task.type === 'multi') {
       const fields = task.fields ?? []
-      const hasDefinedAnswers = fields.some(f => f.answer !== null && f.answer !== '')
-      if (!hasDefinedAnswers) {
+      const checkable = fields.filter(f => f.answer !== null && f.answer !== '')
+      if (checkable.length === 0) {
         onMarkPending()
         setFeedback({ type: 'wait', message: 'Sendt! Venter på godkjenning.' })
         return
       }
-      const allOk = fields.every(
-        (f, i) => !f.answer || norm(answers[i]) === norm(f.answer ?? '')
-      )
-      if (allOk) {
+      const correctCount = checkable.filter(f => {
+        const i = fields.indexOf(f)
+        return norm(answers[i]) === norm(f.answer ?? '')
+      }).length
+      if (correctCount === checkable.length) {
         setFeedback({ type: 'ok', message: `Riktig! +${task.pts}p` })
-        setTimeout(onMarkDone, 1300)
+        setTimeout(() => onMarkDone(), 1300)
+      } else if (correctCount > 0) {
+        const partialPts = Math.round(task.pts * correctCount / checkable.length)
+        setFeedback({ type: 'ok', message: `${correctCount} av ${checkable.length} riktige! +${partialPts}p` })
+        setTimeout(() => onMarkDone(partialPts), 1300)
       } else {
-        setFeedback({ type: 'err', message: 'Ett eller flere svar er feil!' })
+        setFeedback({ type: 'err', message: 'Ingen riktige svar — prøv igjen!' })
       }
     } else {
       onMarkPending()
@@ -81,8 +86,8 @@ export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
           {task.type === 'multi' && (
             <div>
               {(task.fields ?? []).map((f, i) => (
-                <div key={i} className="mb-3">
-                  <div className="text-[13px] text-[var(--color-muted)] mb-[2px]">{f.label}</div>
+                <div key={i} className="flex items-center gap-2 mb-2">
+                  <span className="text-[16px] whitespace-nowrap">{f.label}</span>
                   <input
                     type="text"
                     value={answers[i]}
@@ -93,7 +98,9 @@ export default function TaskForm({ task, onMarkDone, onMarkPending }: Props) {
                     }}
                     placeholder="Svar"
                     autoComplete="off"
-                    className="w-full p-3 border-[0.5px] rounded-[8px] text-[16px] mt-1"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    className="flex-1 p-3 border-[0.5px] rounded-[8px] text-[16px]"
                     style={{
                       borderColor: 'var(--color-border)',
                       background: 'var(--color-card)',

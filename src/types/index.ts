@@ -20,8 +20,9 @@ export interface Team {
   name: string
   icon: string
   pin: string
-  done: Record<string, true | 'pending'>
+  done: Record<string, true | 'pending' | number>
   adminPts: number
+  hasSeenGuide?: boolean
 }
 
 export interface GameConfig {
@@ -58,7 +59,7 @@ export interface SessionState {
 
 export const ICONS = ['🦁','🦋','🐬','🦅','🍋','🌸','🦄','🍷','🥂','🦩','🐙','🚕'] as const
 
-export const COLS = ['Trivia', 'Fysisk', 'Tenke'] as const
+export const COLS = ['Quiz', 'Fysisk', 'Tenke'] as const
 
 export const ROWS = [10, 20, 30] as const
 

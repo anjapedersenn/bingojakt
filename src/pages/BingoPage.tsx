@@ -7,23 +7,27 @@ import ScreenHero from '../components/layout/ScreenHero'
 import BingoBoard from '../components/bingo/BingoBoard'
 import TaskModal from '../components/task/TaskModal'
 import HelpModal from '../components/HelpModal'
+import OnboardingGuide from '../components/onboarding/OnboardingGuide'
 
 export default function BingoPage() {
-  const { gameState, session, logout, writeDone } = useApp()
+  const { gameState, session, logout, writeDone, writeTeamField, fbReady } = useApp()
   const navigate = useNavigate()
   const [openTaskId, setOpenTaskId] = useState<string | null>(null)
   const [showHelp, setShowHelp] = useState(false)
 
   const team = gameState.teams[session.teamKey]
+  const showGuide = fbReady && !session.isAdmin && !!team && team.hasSeenGuide !== true
+  const handleGuideComplete = () => writeTeamField(session.teamKey, 'hasSeenGuide', true)
+
   const { done, completedCount, totalCount } = useTasks(gameState.tasks, team)
   const pts = team ? teamPts(team, gameState.tasks) : 0
   const pct = totalCount ? Math.round((completedCount / totalCount) * 100) : 0
 
   const openTask = gameState.tasks.find(t => t.id === openTaskId) ?? null
 
-  const handleMarkDone = () => {
+  const handleMarkDone = (pts?: number) => {
     if (!openTaskId) return
-    writeDone(session.teamKey, openTaskId, true)
+    writeDone(session.teamKey, openTaskId, pts !== undefined ? pts : true)
     setOpenTaskId(null)
   }
 
@@ -100,7 +104,7 @@ export default function BingoPage() {
       {openTask && (
         <TaskModal
           task={openTask}
-          doneStatus={done[openTask.id] as true | 'pending' | undefined}
+          doneStatus={done[openTask.id]}
           onClose={() => setOpenTaskId(null)}
           onMarkDone={handleMarkDone}
           onMarkPending={handleMarkPending}
@@ -110,6 +114,8 @@ export default function BingoPage() {
       {showHelp && (
         <HelpModal config={gameState.config} onClose={() => setShowHelp(false)} />
       )}
+
+      {showGuide && <OnboardingGuide onComplete={handleGuideComplete} />}
     </div>
   )
 }

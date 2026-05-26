@@ -4,9 +4,9 @@ import TaskForm from './TaskForm'
 
 interface Props {
   task: Task | null
-  doneStatus: true | 'pending' | undefined
+  doneStatus: true | 'pending' | number | undefined
   onClose: () => void
-  onMarkDone: () => void
+  onMarkDone: (pts?: number) => void
   onMarkPending: () => void
 }
 
@@ -67,6 +67,10 @@ export default function TaskModal({ task, doneStatus, onClose, onMarkDone, onMar
         {doneStatus === true ? (
           <div className="p-[14px] rounded-[8px] mt-[10px] text-[15px] font-medium text-center bg-primary-light text-primary-dark">
             Fullført! +{task.pts}p
+          </div>
+        ) : typeof doneStatus === 'number' ? (
+          <div className="p-[14px] rounded-[8px] mt-[10px] text-[15px] font-medium text-center bg-primary-light text-primary-dark">
+            Delvis fullført! +{doneStatus}p
           </div>
         ) : doneStatus === 'pending' ? (
           <div className="p-[14px] rounded-[8px] mt-[10px] text-[15px] font-medium text-center bg-accent-light text-accent-dark">

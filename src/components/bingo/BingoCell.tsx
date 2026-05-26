@@ -2,7 +2,7 @@ import type { Task } from '../../types'
 
 interface Props {
   task: Task | null
-  status: true | 'pending' | undefined
+  status: true | 'pending' | number | undefined
   onClick: () => void
 }
 
@@ -19,7 +19,7 @@ export default function BingoCell({ task, status, onClick }: Props) {
   }
 
 
-  const isDone = status === true
+  const isDone = status === true || typeof status === 'number'
   const isPending = status === 'pending'
 
   const statusClass = isDone

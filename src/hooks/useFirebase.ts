@@ -70,7 +70,7 @@ export function useFirebase() {
     return team
   }, [gameState.teams])
 
-  const writeDone = useCallback((teamKey: string, taskId: string, value: true | 'pending') => {
+  const writeDone = useCallback((teamKey: string, taskId: string, value: true | 'pending' | number) => {
     set(ref(db, `/teams/${teamKey}/done/${taskId}`), value)
   }, [])
 
@@ -80,6 +80,10 @@ export function useFirebase() {
 
   const writeAdminPts = useCallback((teamKey: string, pts: number) => {
     set(ref(db, `/teams/${teamKey}/adminPts`), pts)
+  }, [])
+
+  const writeTeamField = useCallback((teamKey: string, field: string, value: unknown) => {
+    set(ref(db, `/teams/${teamKey}/${field}`), value)
   }, [])
 
   const writeTask = useCallback((task: Task) => {
@@ -111,6 +115,7 @@ export function useFirebase() {
     writeDone,
     deleteDone,
     writeAdminPts,
+    writeTeamField,
     writeTask,
     deleteTask,
     writeTimer,
