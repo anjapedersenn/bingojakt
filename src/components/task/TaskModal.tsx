@@ -110,14 +110,9 @@ export default function TaskModal({ task, doneStatus, submittedAnswers, onClose,
           style={{ background: 'var(--color-border)' }}
         />
 
-        <div className="flex items-center gap-2 mb-[14px]">
-          <span
-            className={`inline-block text-[11px] px-[9px] py-[3px] rounded-[20px] font-semibold ${typePillClass[task.type]}`}
-          >
-            {typeLabel[task.type]}
-          </span>
-          <span className="text-[12px] text-[var(--color-muted)] ml-auto">
-            {task.pts}p · #{task.id}
+        <div className="flex items-center mb-[14px]">
+          <span className="text-[12px] text-[var(--color-muted)]">
+            {task.pts}p
           </span>
         </div>
 
