@@ -24,10 +24,11 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
           {tasks.map(task => {
             const pos = MAP_POS[task.id]
             if (!pos) return null
+            const taskNum = task.row * 3 + task.col + 1
             return (
               <MapPin
                 key={task.id}
-                pts={task.pts}
+                taskNum={taskNum}
                 col={task.col}
                 x={pos.x}
                 y={pos.y}
@@ -67,13 +68,14 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
             </div>
             {group.map(task => {
               const d = done[task.id]
-              const iconClass = d === true ? 'ti-check' : d === 'pending' ? 'ti-clock' : 'ti-circle'
-              const statusColor =
-                d === true
-                  ? 'var(--color-primary)'
-                  : d === 'pending'
-                    ? 'var(--color-accent)'
-                    : 'var(--color-muted)'
+              const taskNum = task.row * 3 + task.col + 1
+              const isDone = d === true || typeof d === 'number'
+              const iconClass = isDone ? 'ti-check' : d === 'pending' ? 'ti-clock' : 'ti-circle'
+              const statusColor = isDone
+                ? 'var(--color-primary)'
+                : d === 'pending'
+                  ? 'var(--color-accent)'
+                  : 'var(--color-muted)'
               const catColor = ['var(--color-primary-dark)', 'var(--color-accent-dark)', '#5a4080'][task.col]
               return (
                 <div
@@ -87,6 +89,7 @@ export default function MapView({ tasks, done, onOpenTask }: Props) {
                     style={{ color: statusColor }}
                     aria-hidden="true"
                   />
+                  <div className="text-[13px] font-bold shrink-0 w-5" style={{ color: catColor }}>{taskNum}</div>
                   <div className="flex-1 text-[14px] font-medium" style={{ color: catColor }}>{task.title}</div>
                 </div>
               )

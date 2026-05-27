@@ -14,14 +14,16 @@ const HEADER_STYLES = [
   'bg-[#ede8f5] text-[#5a4080]',
 ]
 
-
+const ROW_PTS = [10, 20, 30]
 
 export default function BingoBoard({ tasks, done, onOpenTask }: Props) {
   return (
     <div
       className="grid mb-3.5"
-      style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}
+      style={{ gridTemplateColumns: 'auto 1fr 1fr 1fr', gap: '4px' }}
     >
+      {/* Top-left empty corner */}
+      <div />
       {COLS.map((col, ci) => (
         <div
           key={col}
@@ -30,19 +32,30 @@ export default function BingoBoard({ tasks, done, onOpenTask }: Props) {
           {col}
         </div>
       ))}
-      {ROWS.map((_, ri) =>
-        COLS.map((__, ci) => {
-          const task = tasks.find(t => t.row === ri && t.col === ci) ?? null
-          return (
-            <BingoCell
-              key={`${ri}-${ci}`}
-              task={task}
-              status={task ? done[task.id] : undefined}
-              onClick={() => task && onOpenTask(task.id)}
-            />
-          )
-        })
-      )}
+      {ROWS.map((_, ri) => (
+        <>
+          {/* Left column: point label for this row */}
+          <div
+            key={`pts-${ri}`}
+            className="flex items-center justify-center text-[11px] font-semibold text-muted w-7"
+          >
+            {ROW_PTS[ri]}p
+          </div>
+          {COLS.map((__, ci) => {
+            const task = tasks.find(t => t.row === ri && t.col === ci) ?? null
+            const taskNum = ri * 3 + ci + 1
+            return (
+              <BingoCell
+                key={`${ri}-${ci}`}
+                task={task}
+                taskNum={taskNum}
+                status={task ? done[task.id] : undefined}
+                onClick={() => task && onOpenTask(task.id)}
+              />
+            )
+          })}
+        </>
+      ))}
     </div>
   )
 }

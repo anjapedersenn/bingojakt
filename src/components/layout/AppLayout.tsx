@@ -16,6 +16,7 @@ export interface AppContextType {
   writeTeam: FirebaseReturn['writeTeam']
   writeDone: FirebaseReturn['writeDone']
   deleteDone: FirebaseReturn['deleteDone']
+  writeAnswers: FirebaseReturn['writeAnswers']
   writeAdminPts: FirebaseReturn['writeAdminPts']
   writeTeamField: FirebaseReturn['writeTeamField']
   writeTask: FirebaseReturn['writeTask']

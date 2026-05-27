@@ -10,7 +10,7 @@ import HelpModal from '../components/HelpModal'
 import OnboardingGuide from '../components/onboarding/OnboardingGuide'
 
 export default function BingoPage() {
-  const { gameState, session, logout, writeDone, writeTeamField, fbReady } = useApp()
+  const { gameState, session, logout, writeDone, writeAnswers, writeTeamField, fbReady } = useApp()
   const navigate = useNavigate()
   const [openTaskId, setOpenTaskId] = useState<string | null>(null)
   const [showHelp, setShowHelp] = useState(false)
@@ -25,9 +25,10 @@ export default function BingoPage() {
 
   const openTask = gameState.tasks.find(t => t.id === openTaskId) ?? null
 
-  const handleMarkDone = (pts?: number) => {
+  const handleMarkDone = (pts?: number, answers?: string[]) => {
     if (!openTaskId) return
     writeDone(session.teamKey, openTaskId, pts !== undefined ? pts : true)
+    if (answers) writeAnswers(session.teamKey, openTaskId, answers)
     setOpenTaskId(null)
   }
 
@@ -97,14 +98,15 @@ export default function BingoPage() {
       />
 
       <div className="bg-primary-light rounded-[8px] p-3 text-[13px] text-primary-dark">
-        <i className="ti ti-map-pin" aria-hidden="true" /> Finn stasjonen på kartet for å
-        løse oppgaven. 
+        <i className="ti ti-map-pin" aria-hidden="true" /> Finn oppgaven på kartet for å
+        løse den. 
       </div>
 
       {openTask && (
         <TaskModal
           task={openTask}
           doneStatus={done[openTask.id]}
+          submittedAnswers={team?.answers?.[openTask.id]}
           onClose={() => setOpenTaskId(null)}
           onMarkDone={handleMarkDone}
           onMarkPending={handleMarkPending}

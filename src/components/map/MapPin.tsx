@@ -5,7 +5,7 @@ const CAT_COLORS: Record<0 | 1 | 2, string> = {
 }
 
 interface Props {
-  pts: 10 | 20 | 30
+  taskNum: number
   col: 0 | 1 | 2
   x: number
   y: number
@@ -13,10 +13,11 @@ interface Props {
   onClick: () => void
 }
 
-export default function MapPin({ pts, col, x, y, status, onClick }: Props) {
+export default function MapPin({ taskNum, col, x, y, status, onClick }: Props) {
   const catColor = CAT_COLORS[col]
+  const isDone = status === true || typeof status === 'number'
   const bg =
-    status === true
+    isDone
       ? 'var(--color-primary)'
       : status === 'pending'
         ? 'var(--color-accent)'
@@ -29,7 +30,7 @@ export default function MapPin({ pts, col, x, y, status, onClick }: Props) {
       style={{ left: `${x}%`, top: `${y}%`, background: bg, color, border: `2.5px solid ${catColor}` }}
       onClick={onClick}
     >
-      {pts}p
+      {taskNum}
     </div>
   )
 }

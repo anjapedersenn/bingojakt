@@ -74,6 +74,10 @@ export function useFirebase() {
     set(ref(db, `/teams/${teamKey}/done/${taskId}`), value)
   }, [])
 
+  const writeAnswers = useCallback((teamKey: string, taskId: string, answers: string[]) => {
+    set(ref(db, `/teams/${teamKey}/answers/${taskId}`), answers)
+  }, [])
+
   const deleteDone = useCallback((teamKey: string, taskId: string) => {
     remove(ref(db, `/teams/${teamKey}/done/${taskId}`))
   }, [])
@@ -114,6 +118,7 @@ export function useFirebase() {
     loginTeam,
     writeDone,
     deleteDone,
+    writeAnswers,
     writeAdminPts,
     writeTeamField,
     writeTask,

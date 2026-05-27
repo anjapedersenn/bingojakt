@@ -10,11 +10,24 @@ interface Props {
 interface FieldPair {
   label: string
   answer: string
+  options: string[] | null    // null = text field, string[4] = multiple choice
+  correctIndex: number        // index into options of correct answer
 }
 
 function toFieldPairs(fields: Task['fields']): FieldPair[] {
-  if (!fields || fields.length === 0) return [{ label: '', answer: '' }]
-  return fields.map(f => ({ label: f.label, answer: f.answer ?? '' }))
+  if (!fields || fields.length === 0) return [{ label: '', answer: '', options: null, correctIndex: 0 }]
+  return fields.map(f => {
+    if (f.options && f.options.length === 4) {
+      const idx = f.options.indexOf(f.answer ?? '')
+      return {
+        label: f.label,
+        answer: f.answer ?? '',
+        options: [...f.options],
+        correctIndex: idx >= 0 ? idx : 0,
+      }
+    }
+    return { label: f.label, answer: f.answer ?? '', options: null, correctIndex: 0 }
+  })
 }
 
 export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props) {
@@ -62,14 +75,44 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
     if (type === 'multi') {
       task.fields = fields
         .filter(f => f.label.trim())
-        .map(f => ({
-          label: f.label.trim(),
-          answer: f.answer.trim() || null,
-        }))
+        .map(f => {
+          if (f.options) {
+            return {
+              label: f.label.trim(),
+              answer: f.options[f.correctIndex]?.trim() || null,
+              options: f.options,
+            }
+          }
+          return {
+            label: f.label.trim(),
+            answer: f.answer.trim() || null,
+          }
+        })
     }
 
     onSave(task)
   }
+
+  const toggleFieldType = (i: number) => {
+    const next = [...fields]
+    const f = next[i]
+    if (f.options) {
+      next[i] = { ...f, options: null, answer: '', correctIndex: 0 }
+    } else {
+      next[i] = { ...f, options: ['', '', '', ''], answer: '', correctIndex: 0 }
+    }
+    setFields(next)
+  }
+
+  const updateOption = (fieldIdx: number, optIdx: number, val: string) => {
+    const next = [...fields]
+    const opts = [...(next[fieldIdx].options ?? [])]
+    opts[optIdx] = val
+    next[fieldIdx] = { ...next[fieldIdx], options: opts }
+    setFields(next)
+  }
+
+  const LETTERS = ['A', 'B', 'C', 'D']
 
   return (
     <div>
@@ -110,7 +153,7 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
         <label className={labelClass}>Oppgavetype</label>
         <select className={inputClass} style={inputStyle} value={type} onChange={e => setType(e.target.value as TaskType)}>
           <option value="quiz">Quiz</option>
-          <option value="multi">Fler-felt</option>
+          <option value="multi">Fler-felt / Flervalg</option>
           <option value="admin">Admin bedømmer</option>
         </select>
       </div>
@@ -141,45 +184,118 @@ export default function AdminTaskEditor({ initialTask, onSave, onCancel }: Props
 
       {type === 'multi' && (
         <div className="mb-3">
-          <div className={labelClass}>Felter (label + fasitsvar)</div>
+          <div className={labelClass}>Felter</div>
           {fields.map((f, i) => (
-            <div key={i} className="grid gap-2 mb-2" style={{ gridTemplateColumns: '1fr 1fr auto' }}>
-              <input
-                className={inputClass}
-                style={inputStyle}
-                value={f.label}
-                onChange={e => {
-                  const next = [...fields]
-                  next[i] = { ...next[i], label: e.target.value }
-                  setFields(next)
-                }}
-                placeholder={`Felt ${i + 1} navn`}
-              />
-              <input
-                className={inputClass}
-                style={inputStyle}
-                value={f.answer}
-                onChange={e => {
-                  const next = [...fields]
-                  next[i] = { ...next[i], answer: e.target.value }
-                  setFields(next)
-                }}
-                placeholder="Fasit (tom = ingen sjekk)"
-              />
-              <button
-                type="button"
-                onClick={() => setFields(fields.filter((_, j) => j !== i))}
-                className="p-[10px] border-[0.5px] rounded-[8px] text-[14px] cursor-pointer font-[inherit] bg-transparent text-[var(--color-muted)]"
-                style={{ borderColor: 'var(--color-border)' }}
-                disabled={fields.length === 1}
-              >
-                ✕
-              </button>
+            <div
+              key={i}
+              className="border-[0.5px] rounded-[8px] p-3 mb-2"
+              style={{ borderColor: 'var(--color-border)' }}
+            >
+              {/* Header row: label + type toggle + delete */}
+              <div className="flex gap-2 mb-2">
+                <input
+                  className="flex-1 p-[10px] border-[0.5px] rounded-[8px] text-[14px] font-[inherit]"
+                  style={inputStyle}
+                  value={f.label}
+                  onChange={e => {
+                    const next = [...fields]
+                    next[i] = { ...next[i], label: e.target.value }
+                    setFields(next)
+                  }}
+                  placeholder={`Felt ${i + 1} navn`}
+                />
+                <button
+                  type="button"
+                  onClick={() => toggleFieldType(i)}
+                  className="px-[10px] border-[0.5px] rounded-[8px] text-[13px] cursor-pointer font-[inherit] whitespace-nowrap"
+                  style={{
+                    borderColor: f.options ? 'var(--color-primary)' : 'var(--color-border)',
+                    color: f.options ? 'var(--color-primary)' : 'var(--color-muted)',
+                    background: 'var(--color-card)',
+                  }}
+                >
+                  {f.options ? 'Flervalg' : 'Tekstfelt'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFields(fields.filter((_, j) => j !== i))}
+                  className="p-[10px] border-[0.5px] rounded-[8px] text-[14px] cursor-pointer font-[inherit] bg-transparent text-[var(--color-muted)]"
+                  style={{ borderColor: 'var(--color-border)' }}
+                  disabled={fields.length === 1}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Text field answer */}
+              {!f.options && (
+                <input
+                  className={inputClass}
+                  style={inputStyle}
+                  value={f.answer}
+                  onChange={e => {
+                    const next = [...fields]
+                    next[i] = { ...next[i], answer: e.target.value }
+                    setFields(next)
+                  }}
+                  placeholder="Fasit (tom = ingen sjekk)"
+                />
+              )}
+
+              {/* Multiple choice options */}
+              {f.options && (
+                <div className="mt-1 space-y-1">
+                  <div className="text-[12px] text-[var(--color-muted)] mb-2">
+                    Fyll inn 4 alternativer — trykk ✓ for å markere riktig svar
+                  </div>
+                  {LETTERS.map((letter, optIdx) => {
+                    const isCorrect = f.correctIndex === optIdx
+                    return (
+                      <div key={optIdx} className="flex gap-2 items-center">
+                        <span
+                          className="text-[13px] font-semibold w-5 text-center shrink-0"
+                          style={{ color: isCorrect ? 'var(--color-primary)' : 'var(--color-muted)' }}
+                        >
+                          {letter}
+                        </span>
+                        <input
+                          className="flex-1 p-[8px] border-[0.5px] rounded-[8px] text-[14px] font-[inherit]"
+                          style={{
+                            borderColor: isCorrect ? 'var(--color-primary)' : 'var(--color-border)',
+                            background: 'var(--color-card)',
+                            color: 'inherit',
+                          }}
+                          value={f.options![optIdx]}
+                          onChange={e => updateOption(i, optIdx, e.target.value)}
+                          placeholder={`Alternativ ${letter}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = [...fields]
+                            next[i] = { ...next[i], correctIndex: optIdx }
+                            setFields(next)
+                          }}
+                          className="w-8 h-8 rounded-full border-[0.5px] text-[14px] cursor-pointer font-[inherit] shrink-0 flex items-center justify-center"
+                          style={{
+                            borderColor: isCorrect ? 'var(--color-primary)' : 'var(--color-border)',
+                            background: isCorrect ? 'var(--color-primary)' : 'var(--color-card)',
+                            color: isCorrect ? '#fff' : 'var(--color-muted)',
+                          }}
+                          title="Marker som riktig svar"
+                        >
+                          ✓
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           ))}
           <button
             type="button"
-            onClick={() => setFields([...fields, { label: '', answer: '' }])}
+            onClick={() => setFields([...fields, { label: '', answer: '', options: null, correctIndex: 0 }])}
             className="w-full p-[10px] border-[0.5px] rounded-[8px] text-[14px] cursor-pointer font-[inherit] bg-transparent text-primary mt-1"
             style={{ borderColor: 'var(--color-primary)' }}
           >

@@ -17,9 +17,9 @@ export default function MapPage() {
 
   const openTask = gameState.tasks.find(t => t.id === openTaskId) ?? null
 
-  const handleMarkDone = () => {
+  const handleMarkDone = (pts?: number) => {
     if (!openTaskId) return
-    writeDone(session.teamKey, openTaskId, true)
+    writeDone(session.teamKey, openTaskId, pts !== undefined ? pts : true)
     setOpenTaskId(null)
   }
 

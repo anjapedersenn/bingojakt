@@ -14,8 +14,14 @@ const STEPS = [
   {
     emoji: '🎯',
     title: 'Finn oppgavene',
-    text: 'Brettet har 9 oppgaver fordelt på Quiz, Fysisk og Tenke. Rad 1 gir 10p, rad 2 gir 20p, rad 3 gir 30p.',
+    text: 'Brettet har 9 oppgaver fordelt på Quiz, Fysisk og Tenke. Rad 1 gir opptil 10p, rad 2 gir opptil 20p, rad 3 gir opptil 30p.',
     illustration: 'board',
+  },
+  {
+    emoji: '⚠️',
+    title: 'Kun ett forsøk!',
+    text: 'Dere har bare én sjanse per oppgave — tenk før dere svarer! I oppgaver med flere felt som skal hukes av eller fylles inn fordeles poengene per oppgave (20p med 4 felt = 5p per riktig).',
+    illustration: 'scoring',
   },
   {
     emoji: '🗺️',
@@ -56,6 +62,29 @@ function BoardIllustration() {
   )
 }
 
+
+function ScoringIllustration() {
+  return (
+    <div className="flex gap-3 justify-center">
+      <div
+        className="flex flex-col items-center gap-2 rounded-xl p-4 w-[120px]"
+        style={{ background: 'var(--color-primary-light)' }}
+      >
+        <span className="text-3xl">🧠</span>
+        <span className="text-xs font-semibold" style={{ color: 'var(--color-primary-dark)' }}>Quiz</span>
+        <span className="text-xs text-center" style={{ color: 'var(--color-primary-dark)' }}>Riktig = full poeng{'\n'}Feil = 0 poeng</span>
+      </div>
+      <div
+        className="flex flex-col items-center gap-2 rounded-xl p-4 w-[120px]"
+        style={{ background: 'var(--color-accent-light)' }}
+      >
+        <span className="text-3xl">📋</span>
+        <span className="text-xs font-semibold" style={{ color: 'var(--color-accent-dark)' }}>Fler-felts</span>
+        <span className="text-xs text-center" style={{ color: 'var(--color-accent-dark)' }}>Poeng / antall felt per riktig svar</span>
+      </div>
+    </div>
+  )
+}
 
 function MapIllustration() {
   return (
@@ -138,6 +167,7 @@ export default function OnboardingGuide({ onComplete }: Props) {
           <div className="text-6xl mt-4">{current.emoji}</div>
 
           {current.illustration === 'board' && <BoardIllustration />}
+          {current.illustration === 'scoring' && <ScoringIllustration />}
           {current.illustration === 'map' && <MapIllustration />}
 
           <div className="flex flex-col gap-3 max-w-[300px]">

@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import type { Task } from '../../types'
+import { isCorrect, norm } from '../../lib/gameLogic'
 import TaskForm from './TaskForm'
 
 interface Props {
   task: Task | null
   doneStatus: true | 'pending' | number | undefined
+  submittedAnswers?: string[]
   onClose: () => void
-  onMarkDone: (pts?: number) => void
+  onMarkDone: (pts?: number, answers?: string[]) => void
   onMarkPending: () => void
 }
 
@@ -22,7 +24,62 @@ const typeLabel: Record<string, string> = {
   admin: 'Admin bedømmer',
 }
 
-export default function TaskModal({ task, doneStatus, onClose, onMarkDone, onMarkPending }: Props) {
+function ReviewAnswers({ task, answers }: { task: Task; answers: string[] }) {
+  if (task.type === 'quiz') {
+    const correct = isCorrect(task.answer, answers[0])
+    return (
+      <div className="mt-3 flex items-center gap-3 p-3 rounded-[8px] border-[0.5px]"
+        style={{ borderColor: 'var(--color-border)', background: 'var(--color-card)' }}>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12px] text-[var(--color-muted)] mb-[2px]">Ditt svar</div>
+          <div className="text-[15px]">{answers[0] || '—'}</div>
+          {!correct && task.answer && (
+            <div className="text-[12px] text-primary mt-1">Fasit: {task.answer}</div>
+          )}
+        </div>
+        <span className={`text-[12px] font-semibold px-2 py-[3px] rounded-full shrink-0 ${correct ? 'bg-primary-light text-primary-dark' : 'bg-[#FCEBEB] text-[#791F1F]'}`}>
+          {correct ? 'Riktig' : 'Feil'}
+        </span>
+      </div>
+    )
+  }
+
+  if (task.type === 'multi') {
+    const fields = task.fields ?? []
+    return (
+      <div className="mt-3 space-y-2">
+        {fields.map((f, i) => {
+          const hasCorrect = f.answer !== null && f.answer !== ''
+          const correct = hasCorrect && norm(answers[i] ?? '') === norm(f.answer ?? '')
+
+          return (
+            <div key={i}
+              className="flex items-center gap-3 p-3 rounded-[8px] border-[0.5px]"
+              style={{ borderColor: 'var(--color-border)', background: 'var(--color-card)' }}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="text-[12px] text-[var(--color-muted)] mb-[2px]">{f.label}</div>
+                <div className="text-[14px]">{answers[i] || '—'}</div>
+                {hasCorrect && !correct && (
+                  <div className="text-[12px] text-primary mt-1">Fasit: {f.answer}</div>
+                )}
+              </div>
+              {hasCorrect && (
+                <span className={`text-[12px] font-semibold px-2 py-[3px] rounded-full shrink-0 ${correct ? 'bg-primary-light text-primary-dark' : 'bg-[#FCEBEB] text-[#791F1F]'}`}>
+                  {correct ? 'Riktig' : 'Feil'}
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  return null
+}
+
+export default function TaskModal({ task, doneStatus, submittedAnswers, onClose, onMarkDone, onMarkPending }: Props) {
   useEffect(() => {
     if (!task) return
     const handler = (e: KeyboardEvent) => {
@@ -33,6 +90,9 @@ export default function TaskModal({ task, doneStatus, onClose, onMarkDone, onMar
   }, [task, onClose])
 
   if (!task) return null
+
+  const isDone = doneStatus === true || typeof doneStatus === 'number'
+  const earnedPts = doneStatus === true ? task.pts : typeof doneStatus === 'number' ? doneStatus : null
 
   return (
     <div
@@ -64,14 +124,15 @@ export default function TaskModal({ task, doneStatus, onClose, onMarkDone, onMar
         <h3 className="text-[16px] font-semibold mb-2">{task.title}</h3>
         <p className="text-[15px] text-[var(--color-muted)] mb-4 leading-[1.6]">{task.question}</p>
 
-        {doneStatus === true ? (
-          <div className="p-[14px] rounded-[8px] mt-[10px] text-[15px] font-medium text-center bg-primary-light text-primary-dark">
-            Fullført! +{task.pts}p
-          </div>
-        ) : typeof doneStatus === 'number' ? (
-          <div className="p-[14px] rounded-[8px] mt-[10px] text-[15px] font-medium text-center bg-primary-light text-primary-dark">
-            Delvis fullført! +{doneStatus}p
-          </div>
+        {isDone ? (
+          <>
+            <div className="p-[14px] rounded-[8px] text-[15px] font-medium text-center bg-primary-light text-primary-dark">
+              Fullført! +{earnedPts}p
+            </div>
+            {submittedAnswers && (task.type === 'quiz' || task.type === 'multi') && (
+              <ReviewAnswers task={task} answers={submittedAnswers} />
+            )}
+          </>
         ) : doneStatus === 'pending' ? (
           <div className="p-[14px] rounded-[8px] mt-[10px] text-[15px] font-medium text-center bg-accent-light text-accent-dark">
             Innlevert — venter på admin

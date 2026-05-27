@@ -11,7 +11,7 @@ export interface Task {
   code?: string
   answer?: string
   hint?: string
-  fields?: { label: string; answer: string | null }[]
+  fields?: { label: string; answer: string | null; options?: string[] }[]
   emoji?: string
 }
 
@@ -21,6 +21,7 @@ export interface Team {
   icon: string
   pin: string
   done: Record<string, true | 'pending' | number>
+  answers?: Record<string, string[]>
   adminPts: number
   hasSeenGuide?: boolean
 }
