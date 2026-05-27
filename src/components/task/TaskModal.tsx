@@ -12,17 +12,6 @@ interface Props {
   onMarkPending: () => void
 }
 
-const typePillClass: Record<string, string> = {
-  quiz: 'bg-primary-light text-primary-dark',
-  multi: 'bg-[#FAF4E1] text-[#6B4E10]',
-  admin: 'bg-accent-light text-accent-dark',
-}
-
-const typeLabel: Record<string, string> = {
-  quiz: 'Quiz',
-  multi: 'Fler-felt',
-  admin: 'Admin bedømmer',
-}
 
 function ReviewAnswers({ task, answers }: { task: Task; answers: string[] }) {
   if (task.type === 'quiz') {
