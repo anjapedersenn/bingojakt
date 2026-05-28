@@ -307,6 +307,32 @@ export default function SetupPage() {
               Ingen lag registrert ennå — opprett et lag først.
             </p>
           )}
+
+          <div
+            className="mt-4 pt-4"
+            style={{ borderTop: '0.5px solid var(--color-border)' }}
+          >
+            <h3 className="text-[13px] font-semibold m-0 mb-2 text-[var(--color-muted)]">
+              Admin
+            </h3>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                className={`${inputClass} flex-1`}
+                style={inputStyle}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Passord"
+                onKeyDown={e => e.key === 'Enter' && handleAdmin()}
+              />
+              <button
+                onClick={handleAdmin}
+                className="bg-primary-light text-primary-dark border-none px-4 py-3 rounded-[8px] text-[14px] cursor-pointer font-[inherit] min-h-[50px] whitespace-nowrap"
+              >
+                Logg inn
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -317,32 +343,6 @@ export default function SetupPage() {
         </div>
       )}
 
-      {/* Admin */}
-      <div
-        className="rounded-[16px] p-[20px] border-[0.5px]"
-        style={{ background: 'var(--color-card)', borderColor: 'var(--color-border)' }}
-      >
-        <h2 className="text-[16px] font-semibold m-0 mb-3 text-[var(--color-muted)]">
-          Admin-innlogging
-        </h2>
-        <div className="flex gap-2">
-          <input
-            type="password"
-            className={`${inputClass} flex-1`}
-            style={inputStyle}
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="Passord"
-            onKeyDown={e => e.key === 'Enter' && handleAdmin()}
-          />
-          <button
-            onClick={handleAdmin}
-            className="bg-primary-light text-primary-dark border-none px-4 py-3 rounded-[8px] text-[14px] cursor-pointer font-[inherit] min-h-[50px] whitespace-nowrap"
-          >
-            Logg inn
-          </button>
-        </div>
-      </div>
     </div>
   )
 }
