@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { ref, onValue, set, remove } from 'firebase/database'
+import { ref, onValue, set, update, remove } from 'firebase/database'
 import { db } from '../lib/firebase'
 import { objToTasksArr, tasksToFirebaseObj, DEFAULT_TASKS } from '../lib/gameLogic'
 import type { GameState, GameConfig, Task, Team } from '../types'
@@ -82,8 +82,19 @@ export function useFirebase() {
     remove(ref(db, `/teams/${teamKey}/done/${taskId}`))
   }, [])
 
-  const writeAdminPts = useCallback((teamKey: string, pts: number) => {
-    set(ref(db, `/teams/${teamKey}/adminPts`), pts)
+  const writeAdminPts = useCallback((teamKey: string, pts: number, msg?: string) => {
+    if (msg) {
+      update(ref(db, `/teams/${teamKey}`), { adminPts: pts, bonusMsg: msg })
+    } else {
+      set(ref(db, `/teams/${teamKey}/adminPts`), pts)
+    }
+  }, [])
+
+  const writeTaskBonus = useCallback((teamKey: string, currentAdminPts: number, extraPts: number, msg: string) => {
+    update(ref(db, `/teams/${teamKey}`), {
+      adminPts: currentAdminPts + extraPts,
+      bonusMsg: msg,
+    })
   }, [])
 
   const writeTeamField = useCallback((teamKey: string, field: string, value: unknown) => {
@@ -120,6 +131,7 @@ export function useFirebase() {
     deleteDone,
     writeAnswers,
     writeAdminPts,
+    writeTaskBonus,
     writeTeamField,
     writeTask,
     deleteTask,

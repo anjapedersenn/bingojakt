@@ -6,14 +6,13 @@ import { teamPts } from '../lib/gameLogic'
 import ScreenHero from '../components/layout/ScreenHero'
 import BingoBoard from '../components/bingo/BingoBoard'
 import TaskModal from '../components/task/TaskModal'
-import HelpModal from '../components/HelpModal'
 import OnboardingGuide from '../components/onboarding/OnboardingGuide'
 
 export default function BingoPage() {
   const { gameState, session, logout, writeDone, writeAnswers, writeTeamField, fbReady } = useApp()
   const navigate = useNavigate()
   const [openTaskId, setOpenTaskId] = useState<string | null>(null)
-  const [showHelp, setShowHelp] = useState(false)
+  const [showGuideHelp, setShowGuideHelp] = useState(false)
 
   const team = gameState.teams[session.teamKey]
   const showGuide = fbReady && !session.isAdmin && !!team && team.hasSeenGuide !== true
@@ -63,7 +62,7 @@ export default function BingoPage() {
             <i className="ti ti-logout" aria-hidden="true" /> Logg ut
           </button>
           <button
-            onClick={() => setShowHelp(true)}
+            onClick={() => setShowGuideHelp(true)}
             className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-primary text-[18px]"
             style={{ borderColor: 'var(--color-primary)' }}
             aria-label="Spilleregler"
@@ -98,8 +97,11 @@ export default function BingoPage() {
       />
 
       <div className="bg-primary-light rounded-[8px] p-3 text-[13px] text-primary-dark">
-        <i className="ti ti-map-pin" aria-hidden="true" /> Finn oppgaven på kartet for å
-        løse den. 
+        <i className="ti ti-map-pin" aria-hidden="true" /> Finn oppgaven på kartet for å løse den.
+        <div className="mt-1">
+          Har du spørsmål? Ring Anja på{' '}
+          <a href="tel:+4795963675" className="font-semibold underline">+47 959 63 675</a>
+        </div>
       </div>
 
       {openTask && (
@@ -113,11 +115,9 @@ export default function BingoPage() {
         />
       )}
 
-      {showHelp && (
-        <HelpModal config={gameState.config} onClose={() => setShowHelp(false)} />
+      {(showGuide || showGuideHelp) && (
+        <OnboardingGuide onComplete={showGuideHelp ? () => setShowGuideHelp(false) : handleGuideComplete} />
       )}
-
-      {showGuide && <OnboardingGuide onComplete={handleGuideComplete} />}
     </div>
   )
 }

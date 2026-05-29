@@ -18,6 +18,7 @@ export interface AppContextType {
   deleteDone: FirebaseReturn['deleteDone']
   writeAnswers: FirebaseReturn['writeAnswers']
   writeAdminPts: FirebaseReturn['writeAdminPts']
+  writeTaskBonus: FirebaseReturn['writeTaskBonus']
   writeTeamField: FirebaseReturn['writeTeamField']
   writeTask: FirebaseReturn['writeTask']
   deleteTask: FirebaseReturn['deleteTask']
@@ -66,11 +67,15 @@ export default function AppLayout() {
       const prevPts = prev.adminPts ?? 0
       let msg: string | null = null
 
-      if (newPts > prevPts) {
+      if (team.bonusMsg && team.bonusMsg !== prev.bonusMsg) {
+        msg = team.bonusMsg
+      } else if (newPts > prevPts) {
         msg = `+${newPts - prevPts} poeng fra admin! 🎉`
       } else {
         for (const taskId of Object.keys(team.done ?? {})) {
-          if (prev.done?.[taskId] === 'pending' && team.done[taskId] === true) {
+          const wasPending = prev.done?.[taskId] === 'pending'
+          const nowDone = team.done[taskId]
+          if (wasPending && nowDone === true) {
             const task = firebase.gameState.tasks.find(t => t.id === taskId)
             msg = `Oppgave godkjent! +${task?.pts ?? ''}p`
             break

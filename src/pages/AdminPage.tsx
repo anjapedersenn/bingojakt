@@ -19,6 +19,7 @@ export default function AdminPage() {
     writeDone,
     deleteDone,
     writeAdminPts,
+    writeTaskBonus,
     resetAllTeams,
     writeConfig,
   } = useApp()
@@ -182,7 +183,10 @@ export default function AdminPage() {
           tasks={gameState.tasks}
           onApprove={(teamKey, taskId) => writeDone(teamKey, taskId, true)}
           onReject={(teamKey, taskId) => deleteDone(teamKey, taskId)}
-          onSetBonus={(teamKey, pts) => writeAdminPts(teamKey, pts)}
+          onSetBonus={(teamKey, pts, msg) => writeAdminPts(teamKey, pts, msg)}
+          onTaskBonus={(teamKey, extraPts, msg) =>
+            writeTaskBonus(teamKey, gameState.teams[teamKey]?.adminPts ?? 0, extraPts, msg)
+          }
         />
       )}
 

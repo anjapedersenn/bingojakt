@@ -4,13 +4,13 @@ import { useApp } from '../components/layout/AppLayout'
 import ScreenHero from '../components/layout/ScreenHero'
 import MapView from '../components/map/MapView'
 import TaskModal from '../components/task/TaskModal'
-import HelpModal from '../components/HelpModal'
+import OnboardingGuide from '../components/onboarding/OnboardingGuide'
 
 export default function MapPage() {
   const { gameState, session, logout, writeDone } = useApp()
   const navigate = useNavigate()
   const [openTaskId, setOpenTaskId] = useState<string | null>(null)
-  const [showHelp, setShowHelp] = useState(false)
+  const [showGuide, setShowGuide] = useState(false)
 
   const team = gameState.teams[session.teamKey]
   const done = (team?.done ?? {}) as Record<string, true | 'pending'>
@@ -47,7 +47,7 @@ export default function MapPage() {
             <i className="ti ti-logout" aria-hidden="true" /> Logg ut
           </button>
           <button
-            onClick={() => setShowHelp(true)}
+            onClick={() => setShowGuide(true)}
             className="flex items-center justify-center w-[40px] h-[40px] border-[0.5px] rounded-[8px] cursor-pointer bg-transparent text-primary text-[18px]"
             style={{ borderColor: 'var(--color-primary)' }}
             aria-label="Spilleregler"
@@ -69,9 +69,7 @@ export default function MapPage() {
         />
       )}
 
-      {showHelp && (
-        <HelpModal config={gameState.config} onClose={() => setShowHelp(false)} />
-      )}
+      {showGuide && <OnboardingGuide onComplete={() => setShowGuide(false)} />}
     </div>
   )
 }

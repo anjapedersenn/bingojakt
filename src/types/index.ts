@@ -22,6 +22,7 @@ export interface Team {
   pin: string
   done: Record<string, true | 'pending' | number>
   answers?: Record<string, string[]>
+  bonusMsg?: string
   adminPts: number
   hasSeenGuide?: boolean
 }
@@ -33,10 +34,11 @@ export interface GameConfig {
 
 export const DEFAULT_CONFIG: GameConfig = {
   rules:
-    '1. Finn oppgaven på kartet\n' +
-    '2. Svar riktig for automatiske poeng\n' +
-    '3. Ved utfordringer: send inn svar og vent på poeng fra admin\n' +
-    '4. Laget med flest poeng vinner! 🏆',
+    '1. Finn oppgavene på kartet og løs dem innen tiden.\n' +
+    '2. Quiz gir poeng automatisk. Dere har kun én sjanse per oppgave!\n' +
+    '3. Admin-oppgaver: alle som fullfører får full poengsum — best utførelse gir ekstra bonuspoeng. ⭐\n' +
+    '4. Laget som fullfører raskest får 20 bonuspoeng. ⏱️\n' +
+    '5. Laget med flest poeng vinner! 🏆',
   phone: '',
 }
 

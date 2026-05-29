@@ -43,6 +43,11 @@ export default function Leaderboard({ teams, tasks }: Props) {
               <div className="text-[12px] text-[var(--color-muted)]">
                 {doneCount} oppgaver fullført
               </div>
+              {t.bonusMsg && (
+                <div className="text-[11px] text-primary mt-[2px] italic">
+                  ⭐ {t.bonusMsg}
+                </div>
+              )}
             </div>
             <div className="text-[18px] text-primary font-bold">{t.total}p</div>
           </div>
