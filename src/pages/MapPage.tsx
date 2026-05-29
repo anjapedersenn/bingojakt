@@ -57,7 +57,7 @@ export default function MapPage() {
         </div>
       </div>
 
-      <MapView tasks={gameState.tasks} done={done} onOpenTask={setOpenTaskId} />
+      <MapView />
 
       {openTask && (
         <TaskModal

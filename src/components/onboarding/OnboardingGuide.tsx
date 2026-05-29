@@ -27,7 +27,7 @@ const STEPS = [
     emoji: '🗺️',
     title: 'Kart og tidspress',
     text: 'Bruk kartet for å finne oppgavene. Følg med på nedtellingen øverst — når tiden er ute teller ikke nye innleveringer. Sjekk leaderboardet for å se hvor dere ligger an!',
-    illustration: 'map',
+    illustration: 'map2',
   },
 ]
 
@@ -127,27 +127,17 @@ function AdminIllustration() {
   )
 }
 
-function MapIllustration() {
+function Map2Illustration() {
   return (
-    <div className="flex gap-3 justify-center">
-      <div
-        className="flex flex-col items-center gap-2 rounded-xl p-4 w-[120px]"
-        style={{ background: 'var(--color-primary-light)' }}
-      >
-        <span className="text-4xl">🗺️</span>
-        <span className="text-xs font-medium text-center" style={{ color: 'var(--color-primary-dark)' }}>
-          Finn stasjonene
-        </span>
-      </div>
-      <div
-        className="flex flex-col items-center gap-2 rounded-xl p-4 w-[120px]"
-        style={{ background: 'var(--color-accent-light)' }}
-      >
-        <span className="text-4xl">🏆</span>
-        <span className="text-xs font-medium text-center" style={{ color: 'var(--color-accent-dark)' }}>
-          Følg stillingen
-        </span>
-      </div>
+    <div
+      className="rounded-xl overflow-hidden mx-auto"
+      style={{
+        width: 260,
+        height: 200,
+        border: '0.5px solid var(--color-border)',
+      }}
+    >
+      <img src="/map2.jpg" alt="kart" className="w-full h-full object-cover" />
     </div>
   )
 }
@@ -210,7 +200,7 @@ export default function OnboardingGuide({ onComplete }: Props) {
           {current.illustration === 'board' && <BoardIllustration />}
           {current.illustration === 'scoring' && <ScoringIllustration />}
           {current.illustration === 'admin' && <AdminIllustration />}
-          {current.illustration === 'map' && <MapIllustration />}
+          {current.illustration === 'map2' && <Map2Illustration />}
 
           <div className="flex flex-col gap-3 max-w-[300px]">
             <h2 className="text-xl font-semibold" style={{ color: 'var(--color-primary-dark)' }}>
