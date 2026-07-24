@@ -1,4 +1,4 @@
-# Jakten på kjærligheten
+# Bingojakt
 
 Sanntids bingo-scavenger hunt-app bygget for Synne & Aksels bryllup i Italia 🇮🇹
 
@@ -30,7 +30,7 @@ Lag konkurrerer om å fullføre 9 oppgaver plassert rundt gården. Oppgavene lå
 
 ```bash
 git clone <repo-url>
-cd jakten-pa-kjaerligheten
+cd bingojakt
 npm install
 ```
 
